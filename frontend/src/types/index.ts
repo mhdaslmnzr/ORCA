@@ -16,10 +16,11 @@ export interface Equipment {
   name: string;
   type: string;
   location: string;
-  status: 'operational' | 'warning' | 'critical' | 'maintenance';
+  status: 'healthy' | 'warning' | 'critical';
   health: number; // 0-100
   lastMaintenance: string;
   nextMaintenance: string;
+  rul: number; // Remaining Useful Life in hours
 }
 
 export interface SensorData {

@@ -43,10 +43,11 @@ export const MOCK_EQUIPMENT: Equipment[] = [
     name: 'Turbofan Engine A',
     type: 'Jet Engine',
     location: 'Hangar 1',
-    status: 'operational',
+    status: 'healthy',
     health: 85,
     lastMaintenance: '2024-01-15',
-    nextMaintenance: '2024-04-15'
+    nextMaintenance: '2024-04-15',
+    rul: 1200
   },
   {
     id: 'EQ002',
@@ -56,7 +57,8 @@ export const MOCK_EQUIPMENT: Equipment[] = [
     status: 'warning',
     health: 65,
     lastMaintenance: '2024-01-10',
-    nextMaintenance: '2024-03-20'
+    nextMaintenance: '2024-03-20',
+    rul: 450
   },
   {
     id: 'EQ003',
@@ -66,17 +68,19 @@ export const MOCK_EQUIPMENT: Equipment[] = [
     status: 'critical',
     health: 25,
     lastMaintenance: '2024-01-05',
-    nextMaintenance: '2024-02-15'
+    nextMaintenance: '2024-02-15',
+    rul: 72
   },
   {
     id: 'EQ004',
     name: 'Cooling Tower',
     type: 'Cooling System',
     location: 'Outdoor Area',
-    status: 'operational',
+    status: 'healthy',
     health: 92,
     lastMaintenance: '2024-01-20',
-    nextMaintenance: '2024-05-20'
+    nextMaintenance: '2024-05-20',
+    rul: 1800
   }
 ];
 

@@ -1,223 +1,170 @@
 'use client';
 
-import { useState } from 'react';
 import {
   Box,
   Flex,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  IconButton,
-  Avatar,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  MenuDivider,
-  Text,
   HStack,
+  Text,
+  Avatar,
   VStack,
   Badge,
-  useColorModeValue,
-  Tooltip,
   Icon,
 } from '@chakra-ui/react';
-import {
+import { 
+  Bell, 
+  Settings, 
   Search,
-  Bell,
-  ChevronDown,
-  User,
-  Settings,
-  LogOut,
+  Wifi,
+  Signal,
+  Activity
 } from 'lucide-react';
 
 export default function Header() {
-  const [searchQuery, setSearchQuery] = useState('');
-  
-  const headerBg = useColorModeValue('#ffffff', 'gray.900');
-  const borderColor = useColorModeValue('#e2e8f0', 'gray.700');
-  const textColor = useColorModeValue('#1e293b', 'white');
-  const mutedColor = useColorModeValue('#64748b', 'gray.400');
-  const searchBg = useColorModeValue('#f8fafc', 'gray.800');
-
   return (
-    <Box
-      bg={headerBg}
-      borderBottom="1px solid"
-      borderColor={borderColor}
+    <Box 
+      bg="dark.sidebar" 
+      borderBottom="1px solid" 
+      borderColor="dark.border"
       px={6}
       py={4}
-      shadow="sm"
       position="sticky"
       top={0}
-      zIndex={100}
+      zIndex={10}
     >
-      <Flex align="center" justify="space-between">
-        {/* Search Bar */}
-        <Box flex={1} maxW="xl">
-          <InputGroup size="md">
-            <InputLeftElement pointerEvents="none" pl={4}>
-              <Icon as={Search} color={mutedColor} boxSize={5} />
-            </InputLeftElement>
-            <Input
-              placeholder="Search equipment, alerts, reports..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              bg={searchBg}
+      <Flex justify="space-between" align="center">
+        {/* Left Side - ORCA Platform */}
+        <HStack spacing={6}>
+          <VStack align="start" spacing={0}>
+            <Text fontSize="2xl" fontWeight="800" color="dark.text">
+              ORCA
+            </Text>
+            <Text fontSize="sm" color="dark.muted" fontWeight="500">
+              AI Operations Platform
+            </Text>
+          </VStack>
+
+          {/* System Status Indicators */}
+          <HStack spacing={4}>
+            <HStack spacing={2}>
+              <Box w={2} h={2} bg="dark.success" borderRadius="full" />
+              <Text fontSize="sm" color="dark.muted" fontWeight="500">
+                System Online
+              </Text>
+            </HStack>
+            <HStack spacing={2}>
+              <Icon as={Wifi} boxSize={3} color="dark.success" />
+              <Text fontSize="sm" color="dark.muted" fontWeight="500">
+                All Equipment Connected
+              </Text>
+            </HStack>
+            <HStack spacing={2}>
+              <Icon as={Signal} boxSize={3} color="dark.success" />
+              <Text fontSize="sm" color="dark.muted" fontWeight="500">
+                AI Models Active
+              </Text>
+            </HStack>
+          </HStack>
+        </HStack>
+
+        {/* Right Side - Company, User & Actions */}
+        <HStack spacing={6}>
+          {/* Company Info */}
+          <VStack align="end" spacing={0}>
+            <Text fontSize="lg" fontWeight="700" color="dark.text">
+              Maria's Margheritas
+            </Text>
+            <Text fontSize="xs" color="dark.muted">
+              Portfolio Company
+            </Text>
+          </VStack>
+
+          {/* Real-time Status */}
+          <HStack spacing={3}>
+            <Text fontSize="sm" color="dark.muted" fontWeight="500">
+              Last Update: {new Date().toLocaleTimeString()}
+            </Text>
+            <Badge
+              bg="rgba(16, 185, 129, 0.1)"
+              color="dark.success"
+              px={3}
+              py={1}
+              borderRadius="full"
+              fontSize="xs"
+              fontWeight="600"
               border="1px solid"
-              borderColor={borderColor}
-              borderRadius="12px"
-              pl={12}
-              pr={4}
-              py={2}
-              fontSize="md"
-              fontWeight="500"
-              color={textColor}
-              _focus={{
-                bg: useColorModeValue('#ffffff', 'gray.700'),
-                borderColor: '#0ea5e9',
-                boxShadow: '0 0 0 3px rgba(14, 165, 233, 0.1)',
-              }}
-              _hover={{
-                borderColor: '#94a3b8',
-              }}
-              transition="all 0.2s"
-              _placeholder={{
-                color: mutedColor,
-              }}
-            />
-          </InputGroup>
-        </Box>
+              borderColor="dark.success"
+            >
+              LIVE
+            </Badge>
+          </HStack>
 
-        {/* Right Section */}
-        <HStack spacing={4}>
-          {/* Notifications */}
-          <Tooltip label="Notifications" placement="bottom">
-            <Box position="relative">
-              <IconButton
-                aria-label="Notifications"
-                icon={<Icon as={Bell} boxSize={5} />}
-                variant="ghost"
-                size="md"
-                color={textColor}
-                _hover={{ 
-                  bg: useColorModeValue('#f1f5f9', 'gray.700'),
-                }}
-                borderRadius="10px"
-                w={10}
-                h={10}
-              />
-              <Badge
-                position="absolute"
-                top={1}
-                right={1}
-                colorScheme="red"
-                borderRadius="full"
-                fontSize="xs"
-                fontWeight="700"
-                px={1.5}
-                py={0.5}
-                minW={5}
-                h={5}
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                border="2px solid"
-                borderColor={headerBg}
-              >
-                3
-              </Badge>
-            </Box>
-          </Tooltip>
-
-          {/* Profile Menu */}
-          <Menu>
-            <MenuButton
-              as={Box}
+          {/* Action Buttons */}
+          <HStack spacing={2}>
+            <Box
+              w={8}
+              h={8}
+              borderRadius="lg"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              bg="dark.card"
+              color="dark.muted"
+              _hover={{ bg: 'rgba(99, 102, 241, 0.1)', color: 'dark.accent' }}
               cursor="pointer"
-              _hover={{ 
-                bg: useColorModeValue('#f8fafc', 'gray.800'),
-              }}
               transition="all 0.2s"
-              borderRadius="12px"
-              p={2}
             >
-              <HStack spacing={3}>
-                <Avatar
-                  size="sm"
-                  name="John Doe"
-                  bg="#0ea5e9"
-                  color="white"
-                  fontWeight="700"
-                  fontSize="sm"
-                />
-                <VStack align="start" spacing={0}>
-                  <Text fontSize="sm" fontWeight="700" color={textColor}>
-                    John Doe
-                  </Text>
-                  <Text fontSize="xs" color={mutedColor} fontWeight="600">
-                    Administrator
-                  </Text>
-                </VStack>
-                <Icon as={ChevronDown} boxSize={4} color={mutedColor} />
-              </HStack>
-            </MenuButton>
-            
-            <MenuList
-              bg={headerBg}
-              border="1px solid"
-              borderColor={borderColor}
-              borderRadius="12px"
-              shadow="lg"
-              py={2}
-              minW="200px"
+              <Icon as={Search} boxSize={4} />
+            </Box>
+            <Box
+              w={8}
+              h={8}
+              borderRadius="lg"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              bg="dark.card"
+              color="dark.muted"
+              _hover={{ bg: 'rgba(99, 102, 241, 0.1)', color: 'dark.accent' }}
+              cursor="pointer"
+              transition="all 0.2s"
             >
-              <MenuItem
-                icon={<Icon as={User} boxSize={4} />}
-                _hover={{ 
-                  bg: useColorModeValue('#f8fafc', 'gray.700'),
-                }}
-                borderRadius="8px"
-                mx={2}
-                py={3}
-                fontSize="sm"
-                fontWeight="600"
-                color={textColor}
-              >
-                Profile Settings
-              </MenuItem>
-              <MenuItem
-                icon={<Icon as={Settings} boxSize={4} />}
-                _hover={{ 
-                  bg: useColorModeValue('#f8fafc', 'gray.700'),
-                }}
-                borderRadius="8px"
-                mx={2}
-                py={3}
-                fontSize="sm"
-                fontWeight="600"
-                color={textColor}
-              >
-                System Settings
-              </MenuItem>
-              <MenuDivider borderColor={borderColor} mx={2} />
-              <MenuItem
-                icon={<Icon as={LogOut} boxSize={4} />}
-                _hover={{ 
-                  bg: '#fef2f2',
-                  color: '#dc2626'
-                }}
-                borderRadius="8px"
-                mx={2}
-                py={3}
-                color="#ef4444"
-                fontSize="sm"
-                fontWeight="600"
-              >
-                Sign Out
-              </MenuItem>
-            </MenuList>
-          </Menu>
+              <Icon as={Bell} boxSize={4} />
+            </Box>
+            <Box
+              w={8}
+              h={8}
+              borderRadius="lg"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              bg="dark.card"
+              color="dark.muted"
+              _hover={{ bg: 'rgba(99, 102, 241, 0.1)', color: 'dark.accent' }}
+              cursor="pointer"
+              transition="all 0.2s"
+            >
+              <Icon as={Settings} boxSize={4} />
+            </Box>
+          </HStack>
+
+          {/* User Profile */}
+          <HStack spacing={3}>
+            <VStack align="end" spacing={0}>
+              <Text fontSize="sm" fontWeight="600" color="dark.text">
+                DMJ
+              </Text>
+              <Text fontSize="xs" color="dark.muted">
+                Operations Manager
+              </Text>
+            </VStack>
+            <Avatar
+              size="sm"
+              name="DMJ"
+              bg="dark.accent"
+              color="white"
+              fontWeight="bold"
+            />
+          </HStack>
         </HStack>
       </Flex>
     </Box>

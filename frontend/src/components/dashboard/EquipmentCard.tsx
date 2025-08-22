@@ -10,8 +10,8 @@ import {
   VStack,
   Badge,
   Progress,
-  useColorModeValue,
   Icon,
+  IconButton,
 } from '@chakra-ui/react';
 import { 
   CheckCircle, 
@@ -22,77 +22,46 @@ import {
   Clock,
   TrendingDown,
   Gauge,
-  Wifi
+  Wifi,
+  MoreVertical,
+  Eye
 } from 'lucide-react';
 
 interface EquipmentCardProps {
   equipment: Equipment;
+  viewMode?: 'grid' | 'list';
   onClick?: () => void;
 }
 
-export default function EquipmentCard({ equipment, onClick }: EquipmentCardProps) {
-  const cardBg = useColorModeValue('#ffffff', 'gray.800');
-  const borderColor = useColorModeValue('#e2e8f0', 'gray.700');
-  const textColor = useColorModeValue('#1e293b', 'white');
-  const mutedColor = useColorModeValue('#64748b', 'gray.400');
-
+export default function EquipmentCard({ equipment, viewMode = 'grid', onClick }: EquipmentCardProps) {
   const getStatusColor = () => {
     switch (equipment.status) {
       case 'operational':
-        return '#22c55e'; // green.500
+        return 'dark.success';
       case 'warning':
-        return '#f59e0b'; // orange.500
+        return 'dark.warning';
       case 'critical':
-        return '#ef4444'; // red.500
+        return 'dark.danger';
       case 'maintenance':
-        return '#3b82f6'; // blue.500
+        return 'dark.info';
       default:
-        return '#6b7280'; // gray.500
+        return 'dark.muted';
     }
   };
 
   const getStatusBg = () => {
     switch (equipment.status) {
       case 'operational':
-        return '#f0fdf4'; // green.50
+        return 'rgba(16, 185, 129, 0.1)';
       case 'warning':
-        return '#fffbeb'; // orange.50
+        return 'rgba(245, 158, 11, 0.1)';
       case 'critical':
-        return '#fef2f2'; // red.50
+        return 'rgba(239, 68, 68, 0.1)';
       case 'maintenance':
-        return '#eff6ff'; // blue.50
+        return 'rgba(59, 130, 246, 0.1)';
       default:
-        return '#f8fafc'; // gray.50
+        return 'rgba(156, 163, 175, 0.1)';
     }
-  };
-
-  const getStatusBorderColor = () => {
-    switch (equipment.status) {
-      case 'operational':
-        return '#bbf7d0'; // green.200
-      case 'warning':
-        return '#fde68a'; // orange.200
-      case 'critical':
-        return '#fecaca'; // red.200
-      case 'maintenance':
-        return '#bfdbfe'; // blue.200
-      default:
-        return '#e5e7eb'; // gray.200
-    }
-  };
-
-  const getHealthColor = () => {
-    if (equipment.health >= 80) return '#22c55e'; // green.500
-    if (equipment.health >= 60) return '#f59e0b'; // orange.500
-    if (equipment.health >= 40) return '#f97316'; // orange.600
-    return '#ef4444'; // red.500
-  };
-
-  const getHealthBg = () => {
-    if (equipment.health >= 80) return 'green';
-    if (equipment.health >= 60) return 'yellow';
-    if (equipment.health >= 40) return 'orange';
-    return 'red';
   };
 
   const getStatusIcon = () => {
@@ -110,56 +79,147 @@ export default function EquipmentCard({ equipment, onClick }: EquipmentCardProps
     }
   };
 
-  const getStatusText = () => {
-    switch (equipment.status) {
-      case 'operational':
-        return 'Operational';
-      case 'warning':
-        return 'Warning';
-      case 'critical':
-        return 'Critical';
-      case 'maintenance':
-        return 'Maintenance';
-      default:
-        return 'Unknown';
-    }
+  const getHealthColor = () => {
+    if (equipment.health >= 80) return 'dark.success';
+    if (equipment.health >= 60) return 'dark.warning';
+    if (equipment.health >= 40) return 'dark.warning';
+    return 'dark.danger';
   };
 
-  const getStatusBadgeColor = () => {
-    switch (equipment.status) {
-      case 'operational':
-        return 'green';
-      case 'warning':
-        return 'orange';
-      case 'critical':
-        return 'red';
-      case 'maintenance':
-        return 'blue';
-      default:
-        return 'gray';
-    }
-  };
+  const StatusIcon = getStatusIcon();
 
+  if (viewMode === 'list') {
+    return (
+      <Box
+        bg="dark.card"
+        p={6}
+        borderRadius="xl"
+        border="1px solid"
+        borderColor="dark.border"
+        shadow="sm"
+        _hover={{ shadow: 'md', borderColor: getStatusColor() }}
+        transition="all 0.2s"
+        cursor="pointer"
+        onClick={onClick}
+        className="equipment-card"
+      >
+        <HStack spacing={6} align="center">
+          {/* Status Icon */}
+          <Box
+            w={12}
+            h={12}
+            bg={getStatusBg()}
+            borderRadius="xl"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            border="2px solid"
+            borderColor={getStatusColor()}
+          >
+            <Icon as={StatusIcon} boxSize={6} color={getStatusColor()} />
+          </Box>
+
+          {/* Equipment Info */}
+          <VStack align="start" spacing={2} flex={1}>
+            <HStack justify="space-between" w="full">
+              <Text fontSize="lg" fontWeight="600" color="dark.text">
+                {equipment.name}
+              </Text>
+              <Badge
+                bg={getStatusBg()}
+                color={getStatusColor()}
+                px={3}
+                py={1}
+                borderRadius="full"
+                fontSize="xs"
+                fontWeight="600"
+                border="1px solid"
+                borderColor={getStatusColor()}
+              >
+                {equipment.status}
+              </Badge>
+            </HStack>
+            
+            <Text fontSize="sm" color="dark.muted">
+              {equipment.type} • {equipment.location}
+            </Text>
+            
+            <HStack spacing={6}>
+              <HStack spacing={2}>
+                <Icon as={Gauge} boxSize={4} color="dark.muted" />
+                <Text fontSize="sm" color="dark.muted">
+                  Health: {equipment.health}%
+                </Text>
+              </HStack>
+              
+              <HStack spacing={2}>
+                <Icon as={Clock} boxSize={4} color="dark.muted" />
+                <Text fontSize="sm" color="dark.muted">
+                  Updated: {formatDate(equipment.lastUpdated)}
+                </Text>
+              </HStack>
+            </HStack>
+          </VStack>
+
+          {/* Health Bar */}
+          <VStack align="end" spacing={2} minW="120px">
+            <Text fontSize="sm" fontWeight="500" color="dark.text">
+              {equipment.health}%
+            </Text>
+            <Progress 
+              value={equipment.health} 
+              size="sm" 
+              w="full"
+              borderRadius="full"
+              bg="rgba(156, 163, 175, 0.2)"
+              sx={{
+                '& > div': {
+                  bg: getHealthColor(),
+                }
+              }}
+            />
+          </VStack>
+
+          {/* Actions */}
+          <IconButton
+            aria-label="View details"
+            icon={<Icon as={Eye} boxSize={4} />}
+            variant="ghost"
+            size="sm"
+            color="dark.muted"
+            _hover={{ bg: `${getStatusColor()}10`, color: getStatusColor() }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onClick?.();
+            }}
+          />
+        </HStack>
+      </Box>
+    );
+  }
+
+  // Grid view (default)
   return (
     <Box
-      bg={cardBg}
-      border="2px solid"
-      borderColor={getStatusBorderColor()}
-      borderRadius="16px"
+      bg="dark.card"
       p={6}
-      shadow="md"
-      cursor={onClick ? 'pointer' : 'default'}
+      borderRadius="2xl"
+      border="1px solid"
+      borderColor="dark.border"
+      shadow="sm"
+      _hover={{ 
+        shadow: 'lg', 
+        borderColor: getStatusColor(),
+        transform: 'translateY(-2px)'
+      }}
+      transition="all 0.2s"
+      cursor="pointer"
+      onClick={onClick}
       position="relative"
       overflow="hidden"
-      _hover={onClick ? {
-        shadow: 'lg',
-        transform: 'translateY(-2px)',
-        borderColor: getStatusColor(),
-      } : {}}
-      transition="all 0.2s ease-in-out"
-      onClick={onClick}
+      className="equipment-card"
     >
-      {/* Status indicator bar */}
+      {/* Status indicator line */}
       <Box
         position="absolute"
         top={0}
@@ -167,126 +227,122 @@ export default function EquipmentCard({ equipment, onClick }: EquipmentCardProps
         right={0}
         h={1}
         bg={getStatusColor()}
-        borderTopRadius="16px"
       />
 
-      <VStack spacing={5} align="stretch">
-        {/* Header */}
-        <Flex align="start" justify="space-between">
-          <VStack align="start" spacing={2} flex={1}>
-            <Text fontSize="lg" fontWeight="900" color={textColor}>
+      {/* Header */}
+      <HStack justify="space-between" mb={4}>
+        <HStack spacing={3}>
+          <Box
+            w={10}
+            h={10}
+            bg={getStatusBg()}
+            borderRadius="xl"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            border="1px solid"
+            borderColor={getStatusColor()}
+          >
+            <Icon as={StatusIcon} boxSize={5} color={getStatusColor()} />
+          </Box>
+          <VStack align="start" spacing={0}>
+            <Text fontSize="lg" fontWeight="600" color="dark.text" noOfLines={1}>
               {equipment.name}
             </Text>
-            <HStack spacing={2}>
-              <Icon as={Wifi} boxSize={4} color={mutedColor} />
-              <Text fontSize="sm" color={mutedColor} fontWeight="600">
-                {equipment.type}
-              </Text>
-            </HStack>
+            <Text fontSize="xs" color="dark.muted" fontWeight="500">
+              {equipment.type}
+            </Text>
           </VStack>
-          
-          <VStack align="end" spacing={3}>
-            <Badge
-              colorScheme={getStatusBadgeColor()}
-              variant="solid"
-              borderRadius="8px"
-              px={3}
-              py={1}
-              fontSize="xs"
-              fontWeight="700"
-              textTransform="uppercase"
-            >
-              {getStatusText()}
-            </Badge>
-            
-            <Box
-              w={10}
-              h={10}
-              borderRadius="10px"
-              bg={getStatusColor()}
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              color="white"
-            >
-              <Icon as={getStatusIcon()} boxSize={5} />
-            </Box>
-          </VStack>
-        </Flex>
+        </HStack>
+        
+        <IconButton
+          aria-label="More options"
+          icon={<Icon as={MoreVertical} boxSize={4} />}
+          variant="ghost"
+          size="sm"
+          color="dark.muted"
+          _hover={{ bg: 'rgba(156, 163, 175, 0.1)' }}
+          onClick={(e) => {
+            e.stopPropagation();
+            // Handle menu options
+          }}
+        />
+      </HStack>
 
-        {/* Health Status */}
-        <VStack spacing={3} align="stretch">
-          <Flex justify="space-between" align="center">
-            <HStack spacing={2}>
-              <Icon as={Gauge} boxSize={4} color={getHealthColor()} />
-              <Text fontSize="sm" fontWeight="700" color={textColor}>
-                Health Status
-              </Text>
-            </HStack>
-            <Text fontSize="xl" fontWeight="900" color={getHealthColor()}>
+      {/* Equipment Details */}
+      <VStack spacing={4} align="stretch">
+        <HStack justify="space-between">
+          <Text fontSize="sm" color="dark.muted">
+            Location
+          </Text>
+          <Text fontSize="sm" fontWeight="500" color="dark.text">
+            {equipment.location}
+          </Text>
+        </HStack>
+
+        <HStack justify="space-between">
+          <Text fontSize="sm" color="dark.muted">
+            Status
+          </Text>
+          <Badge
+            bg={getStatusBg()}
+            color={getStatusColor()}
+            px={2}
+            py={1}
+            borderRadius="full"
+            fontSize="xs"
+            fontWeight="600"
+            border="1px solid"
+            borderColor={getStatusColor()}
+          >
+            {equipment.status}
+          </Badge>
+        </HStack>
+
+        <HStack justify="space-between">
+          <Text fontSize="sm" color="dark.muted">
+            Last Updated
+          </Text>
+          <Text fontSize="sm" fontWeight="500" color="dark.text">
+            {formatDate(equipment.lastUpdated)}
+          </Text>
+        </HStack>
+
+        {/* Health Section */}
+        <Box>
+          <HStack justify="space-between" mb={2}>
+            <Text fontSize="sm" color="dark.muted">
+              Health
+            </Text>
+            <Text fontSize="sm" fontWeight="600" color={getHealthColor()}>
               {equipment.health}%
             </Text>
-          </Flex>
-          
-          <Progress
-            value={equipment.health}
-            colorScheme={getHealthBg()}
+          </HStack>
+          <Progress 
+            value={equipment.health} 
+            size="sm" 
             borderRadius="full"
-            h={2}
-            bg={useColorModeValue('#f1f5f9', 'gray.700')}
+            bg="rgba(156, 163, 175, 0.2)"
+            sx={{
+              '& > div': {
+                bg: getHealthColor(),
+              }
+            }}
           />
-        </VStack>
+        </Box>
 
-        {/* Equipment Details */}
-        <VStack spacing={3} align="stretch">
-          <HStack justify="space-between" p={3} bg={useColorModeValue('#f8fafc', 'gray.700')} borderRadius="8px">
-            <HStack spacing={2}>
-              <Icon as={Clock} boxSize={4} color={mutedColor} />
-              <Text fontSize="sm" fontWeight="600" color={mutedColor}>Last Updated</Text>
-            </HStack>
-            <Text fontSize="sm" fontWeight="700" color={textColor}>
-              {formatDate(equipment.lastUpdated)}
+        {/* Connection Status */}
+        <HStack justify="space-between">
+          <Text fontSize="sm" color="dark.muted">
+            Connection
+          </Text>
+          <HStack spacing={1}>
+            <Box w={2} h={2} bg="dark.success" borderRadius="full" />
+            <Text fontSize="xs" color="dark.muted">
+              Online
             </Text>
           </HStack>
-          
-          <HStack justify="space-between" p={3} bg={useColorModeValue('#f8fafc', 'gray.700')} borderRadius="8px">
-            <HStack spacing={2}>
-              <Icon as={Activity} boxSize={4} color={mutedColor} />
-              <Text fontSize="sm" fontWeight="600" color={mutedColor}>Performance</Text>
-            </HStack>
-            <Text fontSize="sm" fontWeight="700" color={textColor}>
-              {equipment.performance}%
-            </Text>
-          </HStack>
-
-          {equipment.status === 'critical' && (
-            <Box
-              p={3}
-              bg="#fef2f2"
-              border="1px solid"
-              borderColor="#fecaca"
-              borderRadius="8px"
-            >
-              <HStack justify="space-between">
-                <HStack spacing={2}>
-                  <Icon as={TrendingDown} boxSize={4} color="#ef4444" />
-                  <Text fontSize="sm" color="#dc2626" fontWeight="700">Risk Level</Text>
-                </HStack>
-                <Badge 
-                  colorScheme="red" 
-                  variant="solid" 
-                  borderRadius="6px" 
-                  px={2} 
-                  py={1}
-                  fontSize="xs"
-                  fontWeight="700"
-                >
-                  HIGH RISK
-                </Badge>
-              </HStack>
-            </Box>
-          )}
-        </VStack>
+        </HStack>
       </VStack>
     </Box>
   );

@@ -1,27 +1,27 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import { Providers } from "./providers";
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import './globals.css'
+import { ThemeProvider } from '../providers/ThemeProvider'
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: "ORCA - Operational Risk & Compliance Assistant",
-  description: "AI-powered platform for manufacturing and industrial automation",
-};
+  title: 'ORCA - PREDATOR Dashboard',
+  description: 'Advanced AI system for equipment failure prediction and real-time monitoring',
+}
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: React.ReactNode
+}) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Providers>
+        <ThemeProvider>
           {children}
-        </Providers>
+        </ThemeProvider>
       </body>
     </html>
-  );
+  )
 }

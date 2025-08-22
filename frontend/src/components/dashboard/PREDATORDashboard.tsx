@@ -1,623 +1,385 @@
 'use client';
 
-import { useState } from 'react';
-import { 
-  MOCK_DASHBOARD_STATS, 
-  MOCK_EQUIPMENT, 
-  MOCK_PREDICTIONS,
-  MOCK_ALERTS 
-} from '@/data/mockData';
-import { formatRUL } from '@/lib/utils';
-import StatsCard from './StatsCard';
-import EquipmentCard from './EquipmentCard';
 import {
   Box,
-  Grid,
-  GridItem,
   VStack,
   HStack,
   Text,
   Heading,
   Badge,
-  Flex,
-  useColorModeValue,
-  Button,
   SimpleGrid,
   Icon,
-  Container,
-  Divider,
+  Button,
+  Progress,
+  Select,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  TableContainer,
+  Stat,
+  StatLabel,
+  StatNumber,
+  StatHelpText,
 } from '@chakra-ui/react';
 import { 
-  BarChart3, 
-  CheckCircle, 
-  AlertTriangle, 
-  Clock, 
-  Eye, 
+  Zap, 
+  Search, 
+  Filter,
   TrendingUp,
-  Zap,
-  Shield,
+  TrendingDown,
   Activity,
-  Cpu,
-  Database,
-  Network,
-  Play,
-  Settings
+  AlertTriangle,
+  CheckCircle,
+  Clock,
+  BarChart3
 } from 'lucide-react';
+import { useState } from 'react';
+import { MOCK_EQUIPMENT as mockEquipment } from '@/data/mockData';
+import EquipmentCard from './EquipmentCard';
+import StatsCard from './StatsCard';
 
 export default function PREDATORDashboard() {
-  const [selectedEquipment, setSelectedEquipment] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
 
-  const criticalEquipment = MOCK_EQUIPMENT.filter(eq => eq.status === 'critical');
-  const warningEquipment = MOCK_EQUIPMENT.filter(eq => eq.status === 'warning');
-  const operationalEquipment = MOCK_EQUIPMENT.filter(eq => eq.status === 'operational');
+  // Filter equipment based on search and status
+  const filteredEquipment = mockEquipment.filter(equipment => {
+    const matchesSearch = equipment.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         equipment.type.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesStatus = statusFilter === 'all' || equipment.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
 
-  const bgMain = useColorModeValue('#f8fafc', 'gray.900');
-  const cardBg = useColorModeValue('#ffffff', 'gray.800');
-  const borderColor = useColorModeValue('#e2e8f0', 'gray.700');
-  const textColor = useColorModeValue('#1e293b', 'white');
-  const mutedColor = useColorModeValue('#64748b', 'gray.400');
+  // Calculate overall health metrics
+  const totalEquipment = mockEquipment.length;
+  const healthyEquipment = mockEquipment.filter(e => e.health >= 80).length;
+  const warningEquipment = mockEquipment.filter(e => e.health >= 60 && e.health < 80).length;
+  const criticalEquipment = mockEquipment.filter(e => e.health < 60).length;
+  const averageHealth = mockEquipment.reduce((sum, e) => sum + e.health, 0) / totalEquipment;
+
+  const stats = [
+    {
+      title: 'Total Equipment',
+      value: totalEquipment,
+      change: '+2',
+      changeType: 'increase' as const,
+      icon: Activity,
+      gradient: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(99, 102, 241, 0.2) 100%)'
+    },
+    {
+      title: 'Average Health',
+      value: `${averageHealth.toFixed(1)}%`,
+      change: '+5.2%',
+      changeType: 'increase' as const,
+      icon: TrendingUp,
+      gradient: 'linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(34, 197, 94, 0.2) 100%)'
+    },
+    {
+      title: 'Healthy Equipment',
+      value: healthyEquipment,
+      change: '+1',
+      changeType: 'increase' as const,
+      icon: CheckCircle,
+      gradient: 'linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(34, 197, 94, 0.2) 100%)'
+    },
+    {
+      title: 'Critical Alerts',
+      value: criticalEquipment,
+      change: '-2',
+      changeType: 'decrease' as const,
+      icon: AlertTriangle,
+      gradient: 'linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.2) 100%)'
+    }
+  ];
 
   return (
-    <Box bg={bgMain} minH="100vh" p={{ base: 4, md: 6 }}>
-      <Container maxW="8xl" px={{ base: 4, md: 6 }}>
-        <VStack spacing={{ base: 6, md: 8 }} align="stretch">
-          {/* Hero Section - Much Simpler and Cleaner */}
-          <Box
-            bg="linear-gradient(135deg, #0ea5e9 0%, #3b82f6 50%, #8b5cf6 100%)"
-            borderRadius="24px"
-            p={8}
-            color="white"
-            shadow="xl"
-            border="1px solid"
-            borderColor="brand.200"
-          >
-            <Grid templateColumns={{ base: '1fr', lg: '2fr 1fr' }} gap={8} alignItems="center">
-              <VStack align="start" spacing={6}>
-                <HStack spacing={4}>
-                  <Box
-                    w={16}
-                    h={16}
-                    bg="rgba(255, 255, 255, 0.2)"
-                    borderRadius="16px"
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    border="2px solid rgba(255, 255, 255, 0.3)"
-                  >
-                    <Icon as={Zap} boxSize={8} color="white" />
-                  </Box>
-                  <Box>
-                    <Heading size="2xl" fontWeight="900" color="white">
-                      PREDATOR
-                    </Heading>
-                    <Text fontSize="lg" fontWeight="600" color="rgba(255, 255, 255, 0.9)">
-                      Predictive Maintenance Engine
-                    </Text>
-                  </Box>
-                </HStack>
-                
-                <Text fontSize="lg" color="rgba(255, 255, 255, 0.8)" maxW="2xl" lineHeight="1.6">
-                  Advanced AI system for equipment failure prediction and real-time monitoring.
-                </Text>
-                
-                <HStack spacing={4}>
-                  <Button
-                    leftIcon={<Icon as={Play} boxSize={5} />}
-                    bg="rgba(255, 255, 255, 0.9)"
-                    color="brand.700"
-                    size="lg"
-                    px={8}
-                    borderRadius="12px"
-                    fontWeight="700"
-                    _hover={{
-                      bg: "white",
-                      transform: "translateY(-2px)",
-                    }}
-                  >
-                    Start Analysis
-                  </Button>
-                  <Button
-                    leftIcon={<Icon as={Settings} boxSize={5} />}
-                    variant="outline"
-                    size="lg"
-                    px={8}
-                    borderRadius="12px"
-                    borderColor="rgba(255, 255, 255, 0.3)"
-                    color="white"
-                    fontWeight="600"
-                    _hover={{
-                      bg: "rgba(255, 255, 255, 0.1)",
-                      borderColor: "rgba(255, 255, 255, 0.5)",
-                    }}
-                  >
-                    Configure
-                  </Button>
-                </HStack>
-              </VStack>
-              
-              {/* System Status */}
-              <VStack spacing={4} align="stretch">
-                <Text fontSize="lg" fontWeight="700" color="white">
-                  System Status
-                </Text>
-                <VStack spacing={3} bg="rgba(255, 255, 255, 0.1)" p={4} borderRadius="12px">
-                  <HStack w="full" justify="space-between">
-                    <Text color="rgba(255, 255, 255, 0.8)" fontWeight="600">Active Monitoring</Text>
-                    <Badge colorScheme="green" variant="solid" px={3} py={1} borderRadius="8px" fontWeight="700">
-                      LIVE
-                    </Badge>
-                  </HStack>
-                  <HStack w="full" justify="space-between">
-                    <Text color="rgba(255, 255, 255, 0.8)" fontWeight="600">ML Models</Text>
-                    <Text fontWeight="700" color="white">4 Running</Text>
-                  </HStack>
-                  <HStack w="full" justify="space-between">
-                    <Text color="rgba(255, 255, 255, 0.8)" fontWeight="600">Status</Text>
-                    <Text fontWeight="700" color="white">Operational</Text>
-                  </HStack>
-                </VStack>
-              </VStack>
-            </Grid>
-          </Box>
-
-          {/* Stats Cards - Cleaner Design */}
-          <SimpleGrid columns={{ base: 1, sm: 2, lg: 4 }} spacing={{ base: 4, md: 6 }}>
+    <Box p={6}>
+      <VStack spacing={8} align="stretch">
+        {/* Header */}
+        <VStack align="start" spacing={2}>
+          <HStack spacing={3}>
             <Box
-              bg={cardBg}
-              p={6}
-              borderRadius="16px"
-              shadow="lg"
-              border="1px solid"
-              borderColor={borderColor}
-              _hover={{ transform: "translateY(-4px)", shadow: "xl" }}
-              transition="all 0.3s"
+              w={12}
+              h={12}
+              bg="rgba(99, 102, 241, 0.2)"
+              borderRadius="xl"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
             >
-              <VStack spacing={4} align="stretch">
-                <HStack justify="space-between">
-                  <Text fontSize="sm" fontWeight="700" color={mutedColor} textTransform="uppercase">
-                    Total Equipment
-                  </Text>
-                  <Box
-                    w={12}
-                    h={12}
-                    bg="brand.500"
-                    borderRadius="12px"
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    color="white"
-                  >
-                    <Icon as={Database} boxSize={6} />
-                  </Box>
-                </HStack>
-                <Text fontSize="3xl" fontWeight="900" color={textColor}>
-                  {MOCK_DASHBOARD_STATS.totalEquipment}
-                </Text>
-              </VStack>
+              <Icon as={Zap} boxSize={6} color="dark.accent" />
             </Box>
-
-            <Box
-              bg={cardBg}
-              p={6}
-              borderRadius="16px"
-              shadow="lg"
-              border="1px solid"
-              borderColor={borderColor}
-              _hover={{ transform: "translateY(-4px)", shadow: "xl" }}
-              transition="all 0.3s"
-            >
-              <VStack spacing={4} align="stretch">
-                <HStack justify="space-between">
-                  <Text fontSize="sm" fontWeight="700" color={mutedColor} textTransform="uppercase">
-                    Operational
-                  </Text>
-                  <Box
-                    w={12}
-                    h={12}
-                    bg="green.500"
-                    borderRadius="12px"
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    color="white"
-                  >
-                    <Icon as={CheckCircle} boxSize={6} />
-                  </Box>
-                </HStack>
-                <Text fontSize="3xl" fontWeight="900" color={textColor}>
-                  {MOCK_DASHBOARD_STATS.operationalEquipment}
-                </Text>
-                <Text fontSize="sm" fontWeight="600" color="green.600">
-                  +2 from yesterday
-                </Text>
-              </VStack>
-            </Box>
-
-            <Box
-              bg={cardBg}
-              p={6}
-              borderRadius="16px"
-              shadow="lg"
-              border="1px solid"
-              borderColor={borderColor}
-              _hover={{ transform: "translateY(-4px)", shadow: "xl" }}
-              transition="all 0.3s"
-            >
-              <VStack spacing={4} align="stretch">
-                <HStack justify="space-between">
-                  <Text fontSize="sm" fontWeight="700" color={mutedColor} textTransform="uppercase">
-                    Maintenance Required
-                  </Text>
-                  <Box
-                    w={12}
-                    h={12}
-                    bg="red.500"
-                    borderRadius="12px"
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    color="white"
-                  >
-                    <Icon as={AlertTriangle} boxSize={6} />
-                  </Box>
-                </HStack>
-                <Text fontSize="3xl" fontWeight="900" color={textColor}>
-                  {MOCK_DASHBOARD_STATS.maintenanceRequired}
-                </Text>
-                <Text fontSize="sm" fontWeight="600" color="red.600">
-                  1 critical
-                </Text>
-              </VStack>
-            </Box>
-
-            <Box
-              bg={cardBg}
-              p={6}
-              borderRadius="16px"
-              shadow="lg"
-              border="1px solid"
-              borderColor={borderColor}
-              _hover={{ transform: "translateY(-4px)", shadow: "xl" }}
-              transition="all 0.3s"
-            >
-              <VStack spacing={4} align="stretch">
-                <HStack justify="space-between">
-                  <Text fontSize="sm" fontWeight="700" color={mutedColor} textTransform="uppercase">
-                    System Uptime
-                  </Text>
-                  <Box
-                    w={12}
-                    h={12}
-                    bg="purple.500"
-                    borderRadius="12px"
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    color="white"
-                  >
-                    <Icon as={Cpu} boxSize={6} />
-                  </Box>
-                </HStack>
-                <Text fontSize="3xl" fontWeight="900" color={textColor}>
-                  {MOCK_DASHBOARD_STATS.uptime}%
-                </Text>
-                <Text fontSize="sm" fontWeight="600" color="green.600">
-                  +2.1% this week
-                </Text>
-              </VStack>
-            </Box>
-          </SimpleGrid>
-
-          {/* Critical Alerts */}
-          {criticalEquipment.length > 0 && (
-            <Box
-              bg="red.50"
-              border="2px solid"
-              borderColor="red.200"
-              borderRadius="16px"
-              p={6}
-            >
-              <VStack spacing={6} align="stretch">
-                <HStack spacing={4}>
-                  <Box
-                    w={16}
-                    h={16}
-                    bg="red.500"
-                    borderRadius="12px"
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    color="white"
-                  >
-                    <Icon as={AlertTriangle} boxSize={8} />
-                  </Box>
-                  <VStack align="start" spacing={1}>
-                    <Heading size="xl" color="red.700" fontWeight="900">
-                      Critical Alerts
-                    </Heading>
-                    <Text fontSize="lg" color="red.600" fontWeight="600">
-                      {criticalEquipment.length} equipment requiring immediate attention
-                    </Text>
-                  </VStack>
-                </HStack>
-                
-                <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
-                  {criticalEquipment.map((equipment) => (
-                    <EquipmentCard
-                      key={equipment.id}
-                      equipment={equipment}
-                      onClick={() => setSelectedEquipment(equipment.id)}
-                    />
-                  ))}
-                </SimpleGrid>
-              </VStack>
-            </Box>
-          )}
-
-          {/* Main Content */}
-          <Grid templateColumns={{ base: '1fr', xl: '2fr 1fr' }} gap={8}>
-            {/* Equipment Status */}
-            <GridItem>
-              <Box
-                bg={cardBg}
-                border="1px solid"
-                borderColor={borderColor}
-                borderRadius="16px"
-                p={6}
-                shadow="lg"
-              >
-                <VStack spacing={6} align="stretch">
-                  <HStack spacing={4} justify="space-between">
-                    <HStack spacing={4}>
-                      <Box
-                        w={12}
-                        h={12}
-                        bg="brand.500"
-                        borderRadius="12px"
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        color="white"
-                      >
-                        <Icon as={Activity} boxSize={6} />
-                      </Box>
-                      <VStack align="start" spacing={1}>
-                        <Heading size="lg" color={textColor} fontWeight="900">
-                          Equipment Status
-                        </Heading>
-                        <Text color={mutedColor} fontSize="md" fontWeight="600">
-                          Real-time monitoring and health analytics
-                        </Text>
-                      </VStack>
-                    </HStack>
-                    
-                    <Button
-                      leftIcon={<Icon as={Eye} boxSize={4} />}
-                      variant="outline"
-                      size="md"
-                      borderRadius="8px"
-                      fontWeight="600"
-                    >
-                      View All
-                    </Button>
-                  </HStack>
-
-                  <Divider borderColor={borderColor} />
-
-                  <VStack spacing={6} align="stretch">
-                    {/* Operational Equipment */}
-                    {operationalEquipment.length > 0 && (
-                      <Box>
-                        <HStack spacing={3} mb={4}>
-                          <Box w={3} h={3} bg="green.500" borderRadius="full" />
-                          <Text fontSize="md" fontWeight="700" color="green.600">
-                            Operational Equipment ({operationalEquipment.length})
-                          </Text>
-                        </HStack>
-                        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
-                          {operationalEquipment.map((equipment) => (
-                            <EquipmentCard
-                              key={equipment.id}
-                              equipment={equipment}
-                              onClick={() => setSelectedEquipment(equipment.id)}
-                            />
-                          ))}
-                        </SimpleGrid>
-                      </Box>
-                    )}
-
-                    {/* Warning Equipment */}
-                    {warningEquipment.length > 0 && (
-                      <Box>
-                        <HStack spacing={3} mb={4}>
-                          <Box w={3} h={3} bg="orange.500" borderRadius="full" />
-                          <Text fontSize="md" fontWeight="700" color="orange.600">
-                            Warning Status ({warningEquipment.length})
-                          </Text>
-                        </HStack>
-                        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
-                          {warningEquipment.map((equipment) => (
-                            <EquipmentCard
-                              key={equipment.id}
-                              equipment={equipment}
-                              onClick={() => setSelectedEquipment(equipment.id)}
-                            />
-                          ))}
-                        </SimpleGrid>
-                      </Box>
-                    )}
-                  </VStack>
-                </VStack>
-              </Box>
-            </GridItem>
-
-            {/* Sidebar */}
-            <GridItem>
-              <VStack spacing={6} align="stretch">
-                {/* AI Insights */}
-                <Box
-                  bg={cardBg}
-                  border="1px solid"
-                  borderColor={borderColor}
-                  borderRadius="16px"
-                  p={6}
-                  shadow="lg"
-                >
-                  <VStack spacing={6} align="stretch">
-                    <HStack spacing={4}>
-                      <Box
-                        w={12}
-                        h={12}
-                        bg="purple.500"
-                        borderRadius="12px"
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        color="white"
-                      >
-                        <Icon as={Network} boxSize={6} />
-                      </Box>
-                      <Text fontSize="lg" fontWeight="900" color={textColor}>
-                        AI Insights
-                      </Text>
-                    </HStack>
-                    
-                    <VStack spacing={4} align="stretch">
-                      <Box p={4} bg="purple.50" borderRadius="12px" border="1px solid" borderColor="purple.200">
-                        <Text fontSize="sm" fontWeight="700" color="purple.700">
-                          Prediction Accuracy
-                        </Text>
-                        <Text fontSize="2xl" fontWeight="900" color="purple.600">
-                          94.7%
-                        </Text>
-                      </Box>
-                      
-                      <Box p={4} bg="blue.50" borderRadius="12px" border="1px solid" borderColor="blue.200">
-                        <Text fontSize="sm" fontWeight="700" color="blue.700">
-                          Models Running
-                        </Text>
-                        <Text fontSize="2xl" fontWeight="900" color="blue.600">
-                          4/4
-                        </Text>
-                      </Box>
-                    </VStack>
-                  </VStack>
-                </Box>
-
-                {/* Quick Actions */}
-                <Box
-                  bg={cardBg}
-                  border="1px solid"
-                  borderColor={borderColor}
-                  borderRadius="16px"
-                  p={6}
-                  shadow="lg"
-                >
-                  <VStack spacing={6} align="stretch">
-                    <HStack spacing={4}>
-                      <Box
-                        w={12}
-                        h={12}
-                        bg="brand.500"
-                        borderRadius="12px"
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        color="white"
-                      >
-                        <Icon as={Shield} boxSize={6} />
-                      </Box>
-                      <Text fontSize="lg" fontWeight="900" color={textColor}>
-                        Quick Actions
-                      </Text>
-                    </HStack>
-                    
-                    <VStack spacing={3} align="stretch">
-                      <Button
-                        leftIcon={<Icon as={BarChart3} boxSize={4} />}
-                        variant="outline"
-                        size="md"
-                        borderRadius="8px"
-                        justifyContent="flex-start"
-                        fontWeight="600"
-                      >
-                        Generate Report
-                      </Button>
-                      <Button
-                        leftIcon={<Icon as={TrendingUp} boxSize={4} />}
-                        variant="outline"
-                        size="md"
-                        borderRadius="8px"
-                        justifyContent="flex-start"
-                        fontWeight="600"
-                      >
-                        View Analytics
-                      </Button>
-                      <Button
-                        leftIcon={<Icon as={AlertTriangle} boxSize={4} />}
-                        variant="outline"
-                        size="md"
-                        borderRadius="8px"
-                        justifyContent="flex-start"
-                        fontWeight="600"
-                      >
-                        Alert Settings
-                      </Button>
-                    </VStack>
-                  </VStack>
-                </Box>
-
-                {/* System Health */}
-                <Box
-                  bg="green.50"
-                  border="2px solid"
-                  borderColor="green.200"
-                  borderRadius="16px"
-                  p={6}
-                  shadow="lg"
-                >
-                  <VStack spacing={6} align="stretch">
-                    <HStack spacing={4}>
-                      <Box
-                        w={12}
-                        h={12}
-                        bg="green.500"
-                        borderRadius="12px"
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        color="white"
-                      >
-                        <Icon as={CheckCircle} boxSize={6} />
-                      </Box>
-                      <Text fontSize="lg" fontWeight="900" color="green.700">
-                        System Health
-                      </Text>
-                    </HStack>
-                    
-                    <VStack spacing={4} align="stretch">
-                      <Flex justify="space-between" align="center">
-                        <Text fontSize="md" color="green.600" fontWeight="600">Overall Status</Text>
-                        <Badge colorScheme="green" variant="solid" px={3} py={1} borderRadius="8px" fontWeight="700">
-                          EXCELLENT
-                        </Badge>
-                      </Flex>
-                      <Flex justify="space-between" align="center">
-                        <Text fontSize="md" color="green.600" fontWeight="600">Last Check</Text>
-                        <Text fontSize="md" fontWeight="700" color="green.700">2 min ago</Text>
-                      </Flex>
-                      <Flex justify="space-between" align="center">
-                        <Text fontSize="md" color="green.600" fontWeight="600">Next Scan</Text>
-                        <Text fontSize="md" fontWeight="700" color="green.700">3 min</Text>
-                      </Flex>
-                    </VStack>
-                  </VStack>
-                </Box>
-              </VStack>
-            </GridItem>
-          </Grid>
+            <VStack align="start" spacing={0}>
+              <Heading size="lg" color="dark.text">
+                PREDATOR
+              </Heading>
+              <Text color="dark.muted" fontSize="sm">
+                Predictive Maintenance Engine & Equipment Health Monitoring
+              </Text>
+            </VStack>
+          </HStack>
         </VStack>
-      </Container>
+
+        {/* Stats Overview */}
+        <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={6}>
+          {stats.map((stat, index) => (
+            <StatsCard
+              key={index}
+              title={stat.title}
+              value={stat.value}
+              change={stat.change}
+              changeType={stat.changeType}
+              icon={stat.icon}
+              gradient={stat.gradient}
+            />
+          ))}
+        </SimpleGrid>
+
+        {/* Controls */}
+        <Box
+          bg="dark.card"
+          p={6}
+          borderRadius="2xl"
+          border="1px solid"
+          borderColor="dark.border"
+          shadow="sm"
+        >
+          <VStack spacing={4} align="stretch">
+            <HStack justify="space-between" align="center">
+              <Text fontSize="lg" fontWeight="600" color="dark.text">
+                Equipment Overview
+              </Text>
+              <HStack spacing={3}>
+                {/* Search */}
+                <InputGroup maxW="300px">
+                  <InputLeftElement pointerEvents="none">
+                    <Icon as={Search} color="dark.muted" boxSize={4} />
+                  </InputLeftElement>
+                  <Input
+                    placeholder="Search equipment..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    bg="dark.bg"
+                    borderColor="dark.border"
+                    color="dark.text"
+                    _placeholder={{ color: 'dark.muted' }}
+                    _focus={{ borderColor: 'dark.accent' }}
+                  />
+                </InputGroup>
+
+                {/* Status Filter */}
+                <Select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  bg="dark.bg"
+                  borderColor="dark.border"
+                  color="dark.text"
+                  maxW="150px"
+                  _focus={{ borderColor: 'dark.accent' }}
+                >
+                  <option value="all">All Status</option>
+                  <option value="healthy">Healthy</option>
+                  <option value="warning">Warning</option>
+                  <option value="critical">Critical</option>
+                </Select>
+
+                {/* View Mode Toggle */}
+                <HStack spacing={1} bg="dark.bg" p={1} borderRadius="lg">
+                  <Button
+                    size="sm"
+                    variant={viewMode === 'grid' ? 'solid' : 'ghost'}
+                    colorScheme="brand"
+                    onClick={() => setViewMode('grid')}
+                    borderRadius="md"
+                  >
+                    <Icon as={BarChart3} boxSize={4} />
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant={viewMode === 'list' ? 'solid' : 'ghost'}
+                    colorScheme="brand"
+                    onClick={() => setViewMode('list')}
+                    borderRadius="md"
+                  >
+                    <Icon as={Activity} boxSize={4} />
+                  </Button>
+                </HStack>
+              </HStack>
+            </HStack>
+
+            {/* Results Count */}
+            <Text fontSize="sm" color="dark.muted">
+              Showing {filteredEquipment.length} of {totalEquipment} equipment
+            </Text>
+          </VStack>
+        </Box>
+
+        {/* Equipment Display */}
+        {viewMode === 'grid' ? (
+          <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
+            {filteredEquipment.map((equipment) => (
+              <EquipmentCard key={equipment.id} equipment={equipment} />
+            ))}
+          </SimpleGrid>
+        ) : (
+          <Box
+            bg="dark.card"
+            borderRadius="2xl"
+            border="1px solid"
+            borderColor="dark.border"
+            shadow="sm"
+            overflow="hidden"
+          >
+            <TableContainer>
+              <Table variant="simple" size="sm">
+                <Thead>
+                  <Tr bg="dark.bg">
+                    <Th color="dark.muted">Equipment</Th>
+                    <Th color="dark.muted">Type</Th>
+                    <Th color="dark.muted">Health</Th>
+                    <Th color="dark.muted">Status</Th>
+                    <Th color="dark.muted">Last Maintenance</Th>
+                    <Th color="dark.muted">RUL</Th>
+                    <Th color="dark.muted">Actions</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {filteredEquipment.map((equipment) => (
+                    <Tr key={equipment.id} _hover={{ bg: 'dark.bg' }}>
+                      <Td>
+                        <VStack align="start" spacing={1}>
+                          <Text color="dark.text" fontWeight="600" fontSize="sm">
+                            {equipment.name}
+                          </Text>
+                          <Text color="dark.muted" fontSize="xs">
+                            ID: {equipment.id}
+                          </Text>
+                        </VStack>
+                      </Td>
+                      <Td color="dark.text" fontSize="sm">
+                        {equipment.type}
+                      </Td>
+                      <Td>
+                        <VStack align="start" spacing={1}>
+                          <Text color="dark.text" fontWeight="600" fontSize="sm">
+                            {equipment.health}%
+                          </Text>
+                          <Progress 
+                            value={equipment.health} 
+                            size="sm" 
+                            w="100px"
+                            borderRadius="full"
+                            bg="rgba(156, 163, 175, 0.2)"
+                            sx={{
+                              '& > div': {
+                                bg: equipment.health >= 80 ? 'dark.success' : 
+                                     equipment.health >= 60 ? 'dark.warning' : 'dark.danger',
+                              }
+                            }}
+                          />
+                        </VStack>
+                      </Td>
+                      <Td>
+                        <Badge
+                          bg={`${equipment.status === 'healthy' ? 'dark.success' : 
+                                equipment.status === 'warning' ? 'dark.warning' : 'dark.danger'}10`}
+                          color={equipment.status === 'healthy' ? 'dark.success' : 
+                                 equipment.status === 'warning' ? 'dark.warning' : 'dark.danger'}
+                          px={2}
+                          py={1}
+                          borderRadius="full"
+                          fontSize="xs"
+                          fontWeight="600"
+                          border="1px solid"
+                          borderColor={equipment.status === 'healthy' ? 'dark.success' : 
+                                      equipment.status === 'warning' ? 'dark.warning' : 'dark.danger'}
+                        >
+                          {equipment.status}
+                        </Badge>
+                      </Td>
+                      <Td color="dark.muted" fontSize="sm">
+                        {equipment.lastMaintenance}
+                      </Td>
+                      <Td color="dark.text" fontSize="sm" fontWeight="500">
+                        {equipment.rul} hours
+                      </Td>
+                      <Td>
+                        <HStack spacing={1}>
+                          <Button size="xs" variant="ghost" colorScheme="brand">
+                            <Icon as={BarChart3} boxSize={3} />
+                          </Button>
+                          <Button size="xs" variant="ghost" colorScheme="brand">
+                            <Icon as={Clock} boxSize={3} />
+                          </Button>
+                        </HStack>
+                      </Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </TableContainer>
+          </Box>
+        )}
+
+        {/* AI Insights Panel */}
+        <Box
+          bg="dark.card"
+          p={6}
+          borderRadius="2xl"
+          border="1px solid"
+          borderColor="dark.border"
+          shadow="sm"
+        >
+          <VStack spacing={4} align="stretch">
+            <HStack spacing={3}>
+              <Icon as={Zap} boxSize={5} color="dark.accent" />
+              <Text fontSize="lg" fontWeight="600" color="dark.text">
+                AI-Powered Maintenance Insights
+              </Text>
+            </HStack>
+            
+            <Box
+              bg="dark.bg"
+              p={4}
+              borderRadius="xl"
+              border="1px solid"
+              borderColor="dark.border"
+            >
+              <VStack spacing={3} align="stretch">
+                <HStack spacing={2}>
+                  <Icon as={AlertTriangle} boxSize={4} color="dark.warning" />
+                  <Text fontSize="sm" fontWeight="600" color="dark.text">
+                    Predictive Maintenance Alert
+                  </Text>
+                </HStack>
+                <Text fontSize="sm" color="dark.muted" lineHeight="1.6">
+                  Based on current sensor data and historical patterns, Production Line A is showing 
+                  early signs of bearing wear. Recommended maintenance within 48 hours to prevent 
+                  unplanned downtime. Estimated cost savings: $15,000.
+                </Text>
+                <HStack spacing={2}>
+                  <Button size="xs" colorScheme="brand" variant="outline">
+                    Schedule Maintenance
+                  </Button>
+                  <Button size="xs" colorScheme="brand" variant="outline">
+                    View Analysis
+                  </Button>
+                  <Button size="xs" variant="outline">
+                    Dismiss
+                  </Button>
+                </HStack>
+              </VStack>
+            </Box>
+          </VStack>
+        </Box>
+      </VStack>
     </Box>
   );
 }

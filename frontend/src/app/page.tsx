@@ -1,12 +1,7 @@
 'use client';
 
-import DashboardLayout from '@/components/layout/DashboardLayout';
-import PREDATORDashboard from '@/components/dashboard/PREDATORDashboard';
+import PREDATOREnhanced from '../components/dashboard/PREDATOREnhanced';
 
 export default function Home() {
-  return (
-    <DashboardLayout>
-      <PREDATORDashboard />
-    </DashboardLayout>
-  );
+  return <PREDATOREnhanced />;
 }
