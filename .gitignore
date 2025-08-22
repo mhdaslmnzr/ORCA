@@ -1,0 +1,301 @@
+# ORCA Project - Operational Risk & Compliance Assistant
+# Clean, organized .gitignore based on actual project structure
+
+# ========================================
+# NODE.JS & FRONTEND (Next.js + React)
+# ========================================
+
+# Dependencies
+node_modules/
+frontend/node_modules/
+
+# Package manager logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Next.js build outputs
+.next/
+out/
+build/
+dist/
+
+# TypeScript
+*.tsbuildinfo
+
+# Cache directories
+.npm
+.yarn-integrity
+.eslintcache
+.stylelintcache
+.cache
+.parcel-cache
+
+# Production builds
+*.tgz
+*.tar.gz
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Test coverage
+coverage/
+*.lcov
+.nyc_output
+
+# Build tools
+.grunt
+bower_components
+.lock-wscript
+build/Release
+jspm_packages/
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# REPL history
+.node_repl_history
+
+# Serverless & deployment
+.serverless/
+.fusebox/
+.dynamodb/
+.tern-port
+.vscode-test
+
+# Yarn v2
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# ========================================
+# PYTHON & BACKEND
+# ========================================
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+backend/venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Build artifacts
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Package manager
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Testing & coverage
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Translations
+*.mo
+*.pot
+
+# Frameworks
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+instance/
+.webassets-cache
+.scrapy
+
+# Documentation
+docs/_build/
+.pybuilder/
+target/
+
+# Python tools
+profile_default/
+ipython_config.py
+.pdm.toml
+__pypackages__/
+
+# Task runners
+celerybeat-schedule
+celerybeat.pid
+
+# Sage
+*.sage.py
+
+# Type checkers
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+
+# Debug
+cython_debug/
+
+# Project settings
+.spyderproject
+.spyproject
+.ropeproject
+
+# ========================================
+# JUPYTER & ML
+# ========================================
+
+# Jupyter
+.ipynb_checkpoints
+*.ipynb_checkpoints/
+
+# ========================================
+# ENVIRONMENT & SECURITY
+# ========================================
+
+# Environment variables
+.env
+.env.*
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+!.env.example
+
+# SSL certificates
+*.pem
+*.key
+*.crt
+
+# ========================================
+# DEVELOPMENT TOOLS
+# ========================================
+
+# IDEs
+.idea/
+.vscode/
+.cursor/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ========================================
+# DATABASES & LOGS
+# ========================================
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+logs/
+*.log
+
+# ========================================
+# TEMPORARY & BACKUP FILES
+# ========================================
+
+# Temporary
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Backups
+*.bak
+*.backup
+*.orig
+*.rej
+
+# ========================================
+# CONFIGURATION
+# ========================================
+
+# Local configs
+config.local.*
+settings.local.py
+
+# ========================================
+# DEPLOYMENT & INFRASTRUCTURE
+# ========================================
+
+# Docker (commented - might be needed)
+# .dockerignore
+# Dockerfile
+# docker-compose.yml
+# docker-compose.override.yml
+
+# Terraform (commented - might be needed)
+# *.tfstate
+# *.tfstate.*
+# .terraform/
+# .terraform.lock.hcl
+
+# Kubernetes (commented - might be needed)
+# *.kubeconfig
+
+# ========================================
+# LOCAL DEVELOPMENT
+# ========================================
+
+# Local directories
+.local/
+local/
+
+# ========================================
+# KEEP THESE (Important project files)
+# ========================================
+# Source code (.py, .tsx, .ts, .js files)
+# Configuration files (package.json, requirements.txt, etc.)
+# ML models and scalers (backend/models/, backend/scalers/, backend/meta/)
+# Documentation (README.md, project.md)
+# Jupyter notebooks (ML/*.ipynb)frontend/node_modules/
