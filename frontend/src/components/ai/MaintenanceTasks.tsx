@@ -47,23 +47,11 @@ import {
   RotateCcw,
   Settings,
   FileText,
-  Tool,
   Shield,
   TrendingUp,
   TrendingDown,
 } from 'lucide-react';
-
-interface MaintenanceTask {
-  task_name: string;
-  priority: 'Critical' | 'High' | 'Medium' | 'Low';
-  estimated_time: number;
-  required_tools: string[];
-  required_parts: string[];
-  step_by_step_instructions: string[];
-  safety_notes: string;
-  cost_estimate: number;
-  risk_assessment: string;
-}
+import { MaintenanceTask } from '@/types';
 
 interface MaintenanceTasksProps {
   equipmentId?: string;
@@ -128,14 +116,17 @@ const MaintenanceTasks: React.FC<MaintenanceTasksProps> = ({
 
     setIsLoading(true);
     try {
-      const response = await fetch('/api/maintenance-tasks', {
+      const response = await fetch(`http://localhost:8000/api/ai/maintenance-tasks/${equipmentId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          ...sensorData,
-          fd_id: 'FD001', // Default, can be made configurable
+          equipment_data: {
+            equipment_id: equipmentId,
+            sensor_data: sensorData,
+            rul: rul,
+          },
         }),
       });
 
@@ -310,7 +301,7 @@ const MaintenanceTasks: React.FC<MaintenanceTasksProps> = ({
                       <Text>${task.cost_estimate}</Text>
                     </HStack>
                     <HStack spacing={1}>
-                      <Tool size={14} />
+                      <Wrench size={14} />
                       <Text>{task.required_tools.length} tools</Text>
                     </HStack>
                   </HStack>
@@ -413,8 +404,8 @@ const MaintenanceTasks: React.FC<MaintenanceTasksProps> = ({
                     <List spacing={1}>
                       {selectedTask.required_tools.map((tool, index) => (
                         <ListItem key={index} color="dark.muted" fontSize="sm">
-                          <ListIcon as={Tool} color="dark.accent" />
-                          {tool}
+                                                  <ListIcon as={Wrench} color="dark.accent" />
+                        {tool}
                         </ListItem>
                       ))}
                     </List>

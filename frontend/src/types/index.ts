@@ -12,27 +12,81 @@ export interface ModuleInfo {
 
 // Equipment and Sensor Types
 export interface Equipment {
-  id: string;
+  // Backend data structure (from mock_company.py) - EXACT MATCH
+  equipment_id: string;
   name: string;
-  type: string;
-  location: string;
+  category: string;
+  fd_type: string;
+  health: number;
+  rul: number;
+  cycle_count: number;
   status: 'healthy' | 'warning' | 'critical';
-  health: number; // 0-100
-  lastMaintenance: string;
-  nextMaintenance: string;
-  rul: number; // Remaining Useful Life in hours
+  last_maintenance: string;
+  next_maintenance: string;
+  alerts: string[];
+  location: string;
+  manufacturer: string;
+  installation_date: string;
 }
 
 export interface SensorData {
-  id: string;
-  equipmentId: string;
-  timestamp: string;
-  temperature: number;
-  pressure: number;
-  vibration: number;
-  rpm: number;
-  fuelFlow: number;
-  oilPressure: number;
+  temperature?: number;
+  humidity?: number;
+  vibration?: number;
+  pressure?: number;
+  current?: number;
+  voltage?: number;
+  speed?: number;
+  flow_rate?: number;
+  // Legacy NASA sensor fields for compatibility
+  op_setting_1?: number;
+  op_setting_2?: number;
+  op_setting_3?: number;
+  sensor_2?: number;
+  sensor_3?: number;
+  sensor_4?: number;
+  sensor_6?: number;
+  sensor_7?: number;
+  sensor_8?: number;
+  sensor_9?: number;
+  sensor_11?: number;
+  sensor_12?: number;
+  sensor_13?: number;
+  sensor_14?: number;
+  sensor_15?: number;
+  sensor_17?: number;
+  sensor_20?: number;
+  sensor_21?: number;
+}
+
+export interface MaintenanceTask {
+  task_name: string;
+  priority: 'Critical' | 'High' | 'Medium' | 'Low';
+  estimated_time: number;
+  required_tools: string[];
+  required_parts: string[];
+  step_by_step_instructions: string[];
+  safety_notes: string;
+  cost_estimate: number;
+  risk_assessment: string;
+  // Frontend compatibility fields
+  task?: string;
+  estimated_duration?: string;
+  description?: string;
+}
+
+export interface SummaryData {
+  total_equipment: number;
+  healthy_equipment: number;
+  warning_equipment: number;
+  critical_equipment: number;
+  total_alerts: number;
+  production_status: string;
+  last_update: string;
+  shift: string;
+  batch_count: number;
+  quality_score: number;
+  efficiency: number;
 }
 
 export interface Prediction {

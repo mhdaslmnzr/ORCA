@@ -42,6 +42,7 @@ import {
   Trash2,
   RefreshCw,
 } from 'lucide-react';
+import { formatTimeSafe } from '@/lib/utils';
 
 interface ChatMessage {
   id: string;
@@ -63,7 +64,42 @@ interface FileAnalysis {
   status: string;
 }
 
-const ORCAChatbot: React.FC = () => {
+interface ORCAChatbotProps {
+  equipmentContext?: string;
+  sensorData?: any;
+  rul?: number;
+}
+
+const ORCAChatbot: React.FC<ORCAChatbotProps> = ({ 
+  equipmentContext, 
+  sensorData, 
+  rul 
+}) => {
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Update local state when props change
+  useEffect(() => {
+    if (equipmentContext) {
+      setEquipmentContext(equipmentContext);
+    }
+  }, [equipmentContext]);
+
+  useEffect(() => {
+    if (sensorData) {
+      setSensorData(sensorData);
+    }
+  }, [sensorData]);
+
+  useEffect(() => {
+    if (rul !== undefined) {
+      setRul(rul);
+    }
+  }, [rul]);
+
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: '1',
@@ -76,9 +112,9 @@ const ORCAChatbot: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [fileAnalysis, setFileAnalysis] = useState<FileAnalysis | null>(null);
-  const [equipmentContext, setEquipmentContext] = useState<string>('');
-  const [sensorData, setSensorData] = useState<any>(null);
-  const [rul, setRul] = useState<number | null>(null);
+  const [equipmentContextState, setEquipmentContext] = useState<string>('');
+  const [sensorDataState, setSensorData] = useState<any>(null);
+  const [rulState, setRul] = useState<number | null>(null);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -117,25 +153,25 @@ const ORCAChatbot: React.FC = () => {
     try {
       // Prepare context for AI
       const context: any = {};
-      if (equipmentContext) context.equipment_id = equipmentContext;
-      if (sensorData) context.sensor_data = sensorData;
-      if (rul) context.rul = rul;
+      if (equipmentContextState) context.equipment_id = equipmentContextState;
+      if (sensorDataState) context.sensor_data = sensorDataState;
+      if (rulState) context.rul = rulState;
 
       // Call AI chatbot API
-      const response = await fetch('/api/chat', {
+      const response = await fetch('http://localhost:8000/api/ai/chatbot', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           message: userMessage,
-          ...context,
+          equipment_context: equipmentContextState,
         }),
       });
 
       if (response.ok) {
         const data = await response.json();
-        addMessage('ai', data.ai_response, context);
+        addMessage('ai', data.response, context);
       } else {
         throw new Error('Failed to get AI response');
       }
@@ -155,17 +191,23 @@ const ORCAChatbot: React.FC = () => {
     formData.append('file', selectedFile);
 
     try {
-      const response = await fetch('/api/analyze-data', {
+      const response = await fetch('http://localhost:8000/api/ai/analyze-file', {
         method: 'POST',
-        body: formData,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          file_type: selectedFile.name.endsWith('.json') ? 'json' : 'csv',
+          sensor_data: {}, // Mock data for now
+        }),
       });
 
       if (response.ok) {
         const data = await response.json();
-        setFileAnalysis(data.analysis);
+        setFileAnalysis(data);
         
         // Add AI message about file analysis
-        addMessage('ai', `I've analyzed your file "${selectedFile.name}". Here's what I found:\n\n${data.analysis.analysis}`);
+        addMessage('ai', `I've analyzed your file "${selectedFile.name}". Here's what I found:\n\n${data.recommendations.join('\n')}`);
         
         toast({
           title: 'File analyzed successfully',
@@ -299,7 +341,7 @@ const ORCAChatbot: React.FC = () => {
             <Text color="dark.muted">Equipment:</Text>
             <Select
               size="xs"
-              value={equipmentContext}
+              value={equipmentContextState}
               onChange={(e) => setEquipmentContext(e.target.value)}
               placeholder="Select equipment"
               bg="dark.card"
@@ -320,7 +362,7 @@ const ORCAChatbot: React.FC = () => {
             <Input
               size="xs"
               placeholder="RUL cycles"
-              value={rul || ''}
+              value={rulState || ''}
               onChange={(e) => setRul(Number(e.target.value) || null)}
               bg="dark.card"
               borderColor="dark.border"
@@ -376,7 +418,7 @@ const ORCAChatbot: React.FC = () => {
                     {message.message}
                   </Text>
                   <Text fontSize="xs" color="dark.muted" mt={2}>
-                    {message.timestamp.toLocaleTimeString()}
+                    {mounted ? formatTimeSafe(message.timestamp) : '--:--:--'}
                   </Text>
                 </Box>
                 
