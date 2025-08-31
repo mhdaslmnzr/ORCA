@@ -40,6 +40,14 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+
+  // Ensure compatibility with React 18 and Next.js 14
+  reactStrictMode: true,
+  swcMinify: true,
+  
+  // Optimize for Vercel deployment
+  compress: true,
+  poweredByHeader: false,
 };
 
 export default nextConfig;

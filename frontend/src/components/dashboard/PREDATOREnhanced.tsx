@@ -47,6 +47,7 @@ import Header from '../layout/Header';
 import SideNav from '../layout/SideNav';
 import DemoModal from './DemoModal';
 import { Equipment, SensorData } from '@/types';
+import { api } from '@/lib/api';
 
 export default function PREDATOREnhanced() {
   const [isSideNavExpanded, setIsSideNavExpanded] = useState(false);
@@ -73,14 +74,9 @@ export default function PREDATOREnhanced() {
   const fetchEquipment = useCallback(async () => {
     try {
       console.log('🔍 Fetching equipment data...');
-      const response = await fetch('http://localhost:8000/api/mock/equipment');
-      if (response.ok) {
-        const data = await response.json();
-        console.log('✅ Equipment data received:', data);
-        setEquipment(data);
-      } else {
-        console.error('❌ Equipment fetch failed:', response.status);
-      }
+      const data = await api.getEquipment() as Equipment[];
+      console.log('✅ Equipment data received:', data);
+      setEquipment(data);
     } catch (error) {
       console.error('❌ Error fetching equipment:', error);
     }
@@ -89,16 +85,13 @@ export default function PREDATOREnhanced() {
   // Fetch sensor data for selected equipment
   const fetchSensorData = async (equipmentId: string) => {
     try {
-      const response = await fetch(`http://localhost:8000/api/mock/sensor-data/${equipmentId}`);
-      if (response.ok) {
-        const data = await response.json();
-        setCurrentSensorData(data);
-        
-        // Get equipment status for RUL
-        const eq = equipment.find(e => e.equipment_id === equipmentId);
-        if (eq) {
-          setCurrentRUL(eq.rul);
-        }
+      const data = await api.getSensorData(equipmentId) as Record<string, unknown>;
+      setCurrentSensorData(data);
+      
+      // Get equipment status for RUL
+      const eq = equipment.find(e => e.equipment_id === equipmentId);
+      if (eq) {
+        setCurrentRUL(eq.rul);
       }
     } catch (error) {
       console.error('Error fetching sensor data:', error);
@@ -109,14 +102,9 @@ export default function PREDATOREnhanced() {
   const fetchSummary = useCallback(async () => {
     try {
       console.log('🔍 Fetching summary data...');
-      const response = await fetch('http://localhost:8000/api/mock/summary');
-      if (response.ok) {
-        const data = await response.json();
-        console.log('✅ Summary data received:', data);
-        setSummary(data);
-      } else {
-        console.error('❌ Summary fetch failed:', response.status);
-      }
+      const data = await api.getSummary() as Record<string, unknown>;
+      console.log('✅ Summary data received:', data);
+      setSummary(data);
     } catch (error) {
       console.error('❌ Error fetching summary:', error);
     }
@@ -125,14 +113,12 @@ export default function PREDATOREnhanced() {
   // Simulate real-time updates
   const simulateUpdate = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/mock/simulate', { method: 'POST' });
-      if (response.ok) {
-        // Refresh data after simulation
-        await fetchEquipment();
-        await fetchSummary();
-        if (selectedEquipment) {
-          await fetchSensorData(selectedEquipment);
-        }
+      await api.simulateUpdate();
+      // Refresh data after simulation
+      await fetchEquipment();
+      await fetchSummary();
+      if (selectedEquipment) {
+        await fetchSensorData(selectedEquipment);
       }
     } catch (error) {
       console.error('Error simulating update:', error);
