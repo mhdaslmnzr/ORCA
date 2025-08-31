@@ -51,7 +51,7 @@ interface ChatMessage {
   timestamp: Date;
   context?: {
     equipment_id?: string;
-    sensor_data?: any;
+    sensor_data?: Record<string, unknown>;
     rul?: number;
   };
 }
@@ -66,7 +66,7 @@ interface FileAnalysis {
 
 interface ORCAChatbotProps {
   equipmentContext?: string;
-  sensorData?: any;
+  sensorData?: Record<string, unknown>;
   rul?: number;
 }
 
@@ -129,7 +129,7 @@ const ORCAChatbot: React.FC<ORCAChatbotProps> = ({
     scrollToBottom();
   }, [messages]);
 
-  const addMessage = (type: 'user' | 'ai', message: string, context?: any) => {
+  const addMessage = (type: 'user' | 'ai', message: string, context?: Record<string, unknown>) => {
     const newMessage: ChatMessage = {
       id: Date.now().toString(),
       type,
@@ -152,7 +152,7 @@ const ORCAChatbot: React.FC<ORCAChatbotProps> = ({
 
     try {
       // Prepare context for AI
-      const context: any = {};
+      const context: Record<string, unknown> = {};
       if (equipmentContextState) context.equipment_id = equipmentContextState;
       if (sensorDataState) context.sensor_data = sensorDataState;
       if (rulState) context.rul = rulState;
@@ -388,7 +388,7 @@ const ORCAChatbot: React.FC<ORCAChatbotProps> = ({
       </Box>
 
       {/* Messages */}
-      <Box flex={1} overflowY="auto" p={4} spacing={4}>
+      <Box flex={1} overflowY="auto" p={4}>
         <VStack spacing={4} align="stretch">
           {messages.map((message) => (
             <Box
@@ -491,7 +491,7 @@ const ORCAChatbot: React.FC<ORCAChatbotProps> = ({
         
         <HStack spacing={2} mt={2} justify="center">
           <Text fontSize="xs" color="dark.muted">
-            💡 Try: "Why is my equipment failing?" or "What maintenance should I do next?"
+            💡 Try: &quot;Why is my equipment failing?&quot; or &quot;What maintenance should I do next?&quot;
           </Text>
         </HStack>
       </Box>

@@ -53,6 +53,7 @@ export default function GenAIChat() {
 
   const bgMain = useColorModeValue('#f8fafc', 'gray.900');
   const cardBg = useColorModeValue('#ffffff', 'gray.800');
+  const bgColor = useColorModeValue('#f8fafc', 'gray.700');
   const borderColor = useColorModeValue('#e2e8f0', 'gray.700');
   const textColor = useColorModeValue('#1e293b', 'white');
   const mutedColor = useColorModeValue('#64748b', 'gray.400');
@@ -228,7 +229,7 @@ export default function GenAIChat() {
                       color="white"
                     />
                     <Box
-                      bg={message.type === 'user' ? '#0ea5e9' : useColorModeValue('#f8fafc', 'gray.700')}
+                      bg={message.type === 'user' ? '#0ea5e9' : bgColor}
                       color={message.type === 'user' ? 'white' : textColor}
                       p={4}
                       borderRadius="16px"
@@ -275,7 +276,7 @@ export default function GenAIChat() {
                       color="white"
                     />
                     <Box
-                      bg={useColorModeValue('#f8fafc', 'gray.700')}
+                      bg={bgColor}
                       p={4}
                       borderRadius="16px"
                       border="1px solid"
@@ -303,7 +304,7 @@ export default function GenAIChat() {
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                bg={useColorModeValue('#f8fafc', 'gray.700')}
+                bg={bgColor}
                 border="1px solid"
                 borderColor={borderColor}
                 borderRadius="12px"

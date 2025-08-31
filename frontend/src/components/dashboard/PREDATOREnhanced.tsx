@@ -9,13 +9,13 @@ import {
   Heading,
   Badge,
   SimpleGrid,
-  Icon,
+  Grid,
   Button,
-  Progress,
-  Select,
+  Spinner,
   Input,
   InputGroup,
   InputLeftElement,
+  Select,
   Table,
   Thead,
   Tbody,
@@ -23,66 +23,49 @@ import {
   Th,
   Td,
   TableContainer,
-  Stat,
-  StatLabel,
-  StatNumber,
-  StatHelpText,
-  Grid,
-  GridItem,
+  Progress,
+  Icon,
   useToast,
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  AlertDescription,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
   useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  ModalCloseButton,
-  Spinner,
-  Tooltip,
-  IconButton,
 } from '@chakra-ui/react';
 import { 
-  Zap, 
-  TrendingUp,
-  TrendingDown,
-  Activity,
-  AlertTriangle,
-  CheckCircle,
+  Search, 
+  RefreshCw, 
+  TrendingUp, 
+  TrendingDown, 
+  Activity, 
+  AlertTriangle, 
+  CheckCircle, 
   Clock,
-  RefreshCw,
-  FileText,
-  Search,
+  Eye,
 } from 'lucide-react';
-import { useState as useReactState } from 'react';
 import EquipmentCard from './EquipmentCard';
 import StatsCard from './StatsCard';
 import ORCAChatbot from '../ai/ORCAChatbot';
 import MaintenanceTasks from '../ai/MaintenanceTasks';
 import Header from '../layout/Header';
 import SideNav from '../layout/SideNav';
+import DemoModal from './DemoModal';
 import { Equipment, SensorData } from '@/types';
 
 export default function PREDATOREnhanced() {
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [isSideNavExpanded, setIsSideNavExpanded] = useState(false);
   const [equipment, setEquipment] = useState<Equipment[]>([]);
   const [selectedEquipment, setSelectedEquipment] = useState<string>('');
-  const [currentSensorData, setCurrentSensorData] = useState<SensorData | null>(null);
+  const [currentSensorData, setCurrentSensorData] = useState<Record<string, unknown> | undefined>(undefined);
   const [currentRUL, setCurrentRUL] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-
-  const [summary, setSummary] = useState<any>(null);
   const [isInitialized, setIsInitialized] = useState(false);
-  const [isSideNavExpanded, setIsSideNavExpanded] = useState(false);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  
+  // Add pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  // Add demo modal state
+  const { isOpen: isDemoOpen, onOpen: onDemoOpen, onClose: onDemoClose } = useDisclosure();
+
+  const [summary, setSummary] = useState<Record<string, unknown> | undefined>(undefined);
   
   const toast = useToast();
 
@@ -186,8 +169,15 @@ export default function PREDATOREnhanced() {
     initializeData();
   }, [fetchEquipment, fetchSummary]);
 
-  // Use all equipment since we removed search/filters
-  const filteredEquipment = equipment;
+  // Calculate pagination
+  const totalPages = Math.ceil(equipment.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentEquipment = equipment.slice(startIndex, endIndex);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   // Calculate stats from real data
   const totalEquipment = equipment.length;
@@ -243,23 +233,24 @@ export default function PREDATOREnhanced() {
         onToggle={() => setIsSideNavExpanded(!isSideNavExpanded)}
       />
       
-      {/* Dashboard Content */}
-      <Box p={6} pl={isSideNavExpanded ? "220px" : "100px"}>
-        {/* Dashboard Header */}
-        <VStack spacing={6} align="stretch" mb={8}>
+      {/* Dashboard Content - Reduced padding */}
+      <Box p={4} pl={isSideNavExpanded ? "180px" : "80px"}>
+        {/* Dashboard Header - Reduced spacing */}
+        <VStack spacing={4} align="stretch" mb={6}>
           <HStack justify="space-between" align="center">
             <VStack align="start" spacing={1}>
-              <Heading size="2xl" color="dark.text" fontWeight="900">
+              <Heading size="xl" color="dark.text" fontWeight="900">
                 PREDATOR
               </Heading>
-              <Text fontSize="lg" color="dark.muted">
-                Intelligent Predictive Maintenance, Agentic Task Planner & AI-Powered Insights
+              <Text fontSize="md" color="dark.muted">
+                Intelligent Predictive Maintenance, Agentic Task Planning & Real-Time Insights
               </Text>
             </VStack>
             
-            <HStack spacing={4}>
+            <HStack spacing={3}>
               <Button
-                leftIcon={<RefreshCw size={16} />}
+                size="sm"
+                leftIcon={<RefreshCw size={14} />}
                 onClick={simulateUpdate}
                 isLoading={isLoading}
                 bg="dark.accent"
@@ -269,10 +260,13 @@ export default function PREDATOREnhanced() {
               </Button>
               
               <Button
+                size="sm"
+                leftIcon={<Eye size={14} />}
                 variant="outline"
                 borderColor="dark.border"
                 color="dark.text"
                 _hover={{ bg: 'dark.accent' }}
+                onClick={onDemoOpen}
               >
                 Demo
               </Button>
@@ -280,44 +274,45 @@ export default function PREDATOREnhanced() {
           </HStack>
         </VStack>
 
-        {/* Main Dashboard Grid */}
-        <Grid templateColumns="2fr 1fr" gap={8}>
+        {/* Main Dashboard Grid - Reduced gap */}
+        <Grid templateColumns="2fr 1fr" gap={6}>
           {/* Left Column - Equipment Monitoring */}
-          <VStack spacing={6} align="stretch">
-            {/* Stats Cards */}
+          <VStack spacing={4} align="stretch">
+            {/* Stats Cards - Reduced spacing */}
             {!isInitialized ? (
-              <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={6}>
+              <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={4}>
                 {[1, 2, 3, 4].map((index) => (
                   <Box
                     key={index}
-                    p={6}
+                    p={4}
                     bg="dark.card"
-                    borderRadius="xl"
+                    borderRadius="lg"
                     border="1px solid"
                     borderColor="dark.border"
                     textAlign="center"
                   >
-                    <Spinner size="lg" color="dark.accent" />
-                    <Text color="dark.muted" mt={2}>Loading...</Text>
+                    <Spinner size="md" color="dark.accent" />
+                    <Text color="dark.muted" mt={2} fontSize="sm">Loading...</Text>
                   </Box>
                 ))}
               </SimpleGrid>
             ) : (
-              <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={6}>
+              <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={4}>
                 {stats.map((stat, index) => (
                   <StatsCard key={index} {...stat} />
                 ))}
               </SimpleGrid>
             )}
 
-            {/* Search and Filters */}
-            <HStack spacing={4} justify="space-between">
-              <HStack spacing={4} flex={1}>
-                <InputGroup maxW="400px">
+            {/* Search and Filters - Reduced spacing */}
+            <HStack spacing={3} justify="space-between">
+              <HStack spacing={3} flex={1}>
+                <InputGroup maxW="350px">
                   <InputLeftElement>
-                    <Icon as={Search} color="dark.muted" />
+                    <Icon as={Search} color="dark.muted" boxSize={4} />
                   </InputLeftElement>
                   <Input
+                    size="sm"
                     placeholder="Search equipment..."
                     bg="dark.card"
                     borderColor="dark.border"
@@ -327,10 +322,11 @@ export default function PREDATOREnhanced() {
                 </InputGroup>
                 
                 <Select
+                  size="sm"
                   bg="dark.card"
                   borderColor="dark.border"
                   color="dark.text"
-                  w="150px"
+                  w="130px"
                 >
                   <option value="all">All Status</option>
                   <option value="healthy">Healthy</option>
@@ -340,7 +336,7 @@ export default function PREDATOREnhanced() {
               </HStack>
             </HStack>
 
-            {/* View Mode Toggle */}
+            {/* View Mode Toggle - Reduced spacing */}
             <HStack spacing={2} justify="flex-end">
               <Button
                 size="sm"
@@ -362,124 +358,224 @@ export default function PREDATOREnhanced() {
               </Button>
             </HStack>
 
-            {/* Equipment Display */}
+            {/* Equipment Display - Show only 5 items */}
             {!isInitialized ? (
               <Box
-                p={8}
+                p={6}
                 bg="dark.card"
-                borderRadius="xl"
+                borderRadius="lg"
                 border="1px solid"
                 borderColor="dark.border"
                 textAlign="center"
               >
-                <Spinner size="xl" color="dark.accent" />
-                <Text color="dark.muted" mt={4}>Loading equipment data...</Text>
+                <Spinner size="lg" color="dark.accent" />
+                <Text color="dark.muted" mt={3} fontSize="sm">Loading equipment data...</Text>
               </Box>
             ) : viewMode === 'grid' ? (
-              <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
-                {filteredEquipment.map((eq) => (
-                  <Box
-                    key={eq.equipment_id}
-                    onClick={() => handleEquipmentSelect(eq.equipment_id)}
-                    cursor="pointer"
-                    className="card-hover"
-                  >
-                    <EquipmentCard
-                      equipment={eq}
-                    />
-                  </Box>
-                ))}
-              </SimpleGrid>
-            ) : (
-              <TableContainer bg="dark.card" borderRadius="xl" border="1px solid" borderColor="dark.border">
-                <Table variant="simple">
-                  <Thead>
-                    <Tr>
-                      <Th color="dark.muted">Equipment ID</Th>
-                      <Th color="dark.muted">Name</Th>
-                      <Th color="dark.muted">Category</Th>
-                      <Th color="dark.muted">Health</Th>
-                      <Th color="dark.muted">RUL</Th>
-                      <Th color="dark.muted">Status</Th>
-                      <Th color="dark.muted">Location</Th>
-                      <Th color="dark.muted">Alerts</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody>
-                    {filteredEquipment.map((eq) => (
-                      <Tr
-                        key={eq.equipment_id}
-                        onClick={() => handleEquipmentSelect(eq.equipment_id)}
-                        cursor="pointer"
-                        _hover={{ bg: 'dark.sidebar' }}
+              <>
+                <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+                  {currentEquipment.map((eq) => (
+                    <Box
+                      key={eq.equipment_id}
+                      onClick={() => handleEquipmentSelect(eq.equipment_id)}
+                      cursor="pointer"
+                      className="card-hover"
+                    >
+                      <EquipmentCard
+                        equipment={eq}
+                      />
+                    </Box>
+                  ))}
+                </SimpleGrid>
+                
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                  <HStack spacing={2} justify="center" mt={4}>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      isDisabled={currentPage === 1}
+                      borderColor="dark.border"
+                      color="dark.text"
+                      _hover={{ bg: 'dark.accent' }}
+                    >
+                      Previous
+                    </Button>
+                    
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                      <Button
+                        key={page}
+                        size="sm"
+                        variant={currentPage === page ? 'solid' : 'outline'}
+                        onClick={() => handlePageChange(page)}
+                        bg={currentPage === page ? 'dark.accent' : 'transparent'}
+                        color={currentPage === page ? 'white' : 'dark.text'}
+                        borderColor="dark.border"
+                        _hover={{ bg: 'dark.accent' }}
                       >
-                        <Td color="dark.text" fontWeight="600">{eq.equipment_id}</Td>
-                        <Td color="dark.text">{eq.name}</Td>
-                        <Td>
-                          <Badge
-                            colorScheme={
-                              eq.category === 'sauce_ingredient' ? 'orange' :
-                              eq.category === 'dough_production' ? 'yellow' :
-                              eq.category === 'assembly_production' ? 'green' :
-                              eq.category === 'baking_cooking' ? 'red' :
-                              eq.category === 'packaging_output' ? 'purple' : 'blue'
-                            }
-                            variant="outline"
-                            borderRadius="full"
-                            px={2}
-                            py={1}
-                          >
-                            {eq.category ? eq.category.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Unknown'}
-                          </Badge>
-                        </Td>
-                        <Td>
-                          <Progress
-                            value={eq.health}
-                            colorScheme={eq.health >= 80 ? 'green' : eq.health >= 60 ? 'yellow' : 'red'}
-                            borderRadius="full"
-                            size="sm"
-                          />
-                          <Text fontSize="xs" color="dark.muted" mt={1}>
-                            {eq.health.toFixed(1)}%
-                          </Text>
-                        </Td>
-                        <Td color="dark.text">
-                          {eq.rul >= 8760 ? `${Math.round(eq.rul / 8760)}y` :
-                           eq.rul >= 168 ? `${Math.round(eq.rul / 168)}w` :
-                           eq.rul >= 24 ? `${Math.round(eq.rul / 24)}d` :
-                           `${eq.rul}h`}
-                        </Td>
-                        <Td>
-                          <Badge
-                            colorScheme={eq.status === 'healthy' ? 'green' : eq.status === 'warning' ? 'yellow' : 'red'}
-                            variant="solid"
-                            borderRadius="full"
-                            px={2}
-                            py={1}
-                          >
-                            {eq.status}
-                          </Badge>
-                        </Td>
-                        <Td color="dark.text" fontSize="sm">{eq.location || 'Production Floor'}</Td>
-                        <Td>
-                          {eq.alerts && eq.alerts.length > 0 ? (
-                            <Badge colorScheme="red" variant="solid" borderRadius="full">
-                              {eq.alerts.length}
-                            </Badge>
-                          ) : (
-                            <Text color="dark.muted">-</Text>
-                          )}
-                        </Td>
-                      </Tr>
+                        {page}
+                      </Button>
                     ))}
-                  </Tbody>
-                </Table>
-              </TableContainer>
+                    
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      isDisabled={currentPage === totalPages}
+                      borderColor="dark.border"
+                      color="dark.text"
+                      _hover={{ bg: 'dark.accent' }}
+                    >
+                      Next
+                    </Button>
+                  </HStack>
+                )}
+                
+                {/* Equipment Count Info */}
+                <Text fontSize="sm" color="dark.muted" textAlign="center">
+                  Showing {startIndex + 1}-{Math.min(endIndex, equipment.length)} of {equipment.length} equipment
+                </Text>
+              </>
+            ) : (
+              <>
+                <TableContainer bg="dark.card" borderRadius="lg" border="1px solid" borderColor="dark.border">
+                  <Table variant="simple" size="sm">
+                    <Thead>
+                      <Tr>
+                        <Th color="dark.muted" fontSize="xs">Equipment ID</Th>
+                        <Th color="dark.muted" fontSize="xs">Name</Th>
+                        <Th color="dark.muted" fontSize="xs">Category</Th>
+                        <Th color="dark.muted" fontSize="xs">Health</Th>
+                        <Th color="dark.muted" fontSize="xs">RUL</Th>
+                        <Th color="dark.muted" fontSize="xs">Status</Th>
+                        <Th color="dark.muted" fontSize="xs">Location</Th>
+                        <Th color="dark.muted" fontSize="xs">Alerts</Th>
+                      </Tr>
+                    </Thead>
+                    <Tbody>
+                      {currentEquipment.map((eq) => (
+                        <Tr
+                          key={eq.equipment_id}
+                          onClick={() => handleEquipmentSelect(eq.equipment_id)}
+                          cursor="pointer"
+                          _hover={{ bg: 'dark.sidebar' }}
+                        >
+                          <Td color="dark.text" fontWeight="600" fontSize="sm">{eq.equipment_id}</Td>
+                          <Td color="dark.text" fontSize="sm">{eq.name}</Td>
+                          <Td>
+                            <Badge
+                              colorScheme={
+                                eq.category === 'sauce_ingredient' ? 'orange' :
+                                eq.category === 'dough_production' ? 'yellow' :
+                                eq.category === 'assembly_production' ? 'green' :
+                                eq.category === 'baking_cooking' ? 'red' :
+                                eq.category === 'packaging_output' ? 'purple' : 'blue'
+                              }
+                              variant="outline"
+                              borderRadius="full"
+                              px={2}
+                              py={1}
+                              fontSize="xs"
+                            >
+                              {eq.category ? eq.category.replace('_', ' ').split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') : 'Unknown'}
+                            </Badge>
+                          </Td>
+                          <Td>
+                            <Progress
+                              value={eq.health}
+                              colorScheme={eq.health >= 80 ? 'green' : eq.health >= 60 ? 'yellow' : 'red'}
+                              borderRadius="full"
+                              size="sm"
+                              height="8px"
+                            />
+                            <Text fontSize="xs" color="dark.muted" mt={1}>
+                              {eq.health.toFixed(1)}%
+                            </Text>
+                          </Td>
+                          <Td color="dark.text" fontSize="sm">
+                            {eq.rul >= 8760 ? Math.round(eq.rul / 8760) + 'y' :
+                             eq.rul >= 168 ? Math.round(eq.rul / 168) + 'w' :
+                             eq.rul >= 24 ? Math.round(eq.rul / 24) + 'd' :
+                             eq.rul + 'h'}
+                          </Td>
+                          <Td>
+                            <Badge
+                              colorScheme={eq.status === 'healthy' ? 'green' : eq.status === 'warning' ? 'yellow' : 'red'}
+                              variant="solid"
+                              borderRadius="full"
+                              px={2}
+                              py={1}
+                              fontSize="xs"
+                            >
+                              {eq.status}
+                            </Badge>
+                          </Td>
+                          <Td color="dark.text" fontSize="sm">{eq.location || 'Production Floor'}</Td>
+                          <Td>
+                            {eq.alerts && eq.alerts.length > 0 ? (
+                              <Badge colorScheme="red" variant="solid" borderRadius="full" fontSize="xs">
+                                {eq.alerts.length}
+                              </Badge>
+                            ) : (
+                              <Text color="dark.muted" fontSize="sm">-</Text>
+                            )}
+                          </Td>
+                        </Tr>
+                      ))}
+                    </Tbody>
+                  </Table>
+                </TableContainer>
+                
+                {/* Pagination Controls for List View */}
+                {totalPages > 1 && (
+                  <HStack spacing={2} justify="center" mt={4}>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      isDisabled={currentPage === 1}
+                      borderColor="dark.border"
+                      color="dark.text"
+                      _hover={{ bg: 'dark.accent' }}
+                    >
+                      Previous
+                    </Button>
+                    
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                      <Button
+                        key={page}
+                        size="sm"
+                        variant={currentPage === page ? 'solid' : 'outline'}
+                        onClick={() => handlePageChange(page)}
+                        bg={currentPage === page ? 'dark.accent' : 'transparent'}
+                        color={currentPage === page ? 'white' : 'dark.text'}
+                        borderColor="dark.border"
+                        _hover={{ bg: 'dark.accent' }}
+                      >
+                        {page}
+                      </Button>
+                    ))}
+                    
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      isDisabled={currentPage === totalPages}
+                      borderColor="dark.border"
+                      color="dark.text"
+                      _hover={{ bg: 'dark.accent' }}
+                    >
+                      Next
+                    </Button>
+                  </HStack>
+                )}
+              </>
             )}
           </VStack>
 
-          {/* Right Column - AI Components */}
-          <VStack spacing={6} align="stretch">
+          {/* Right Column - AI Components - Reduced spacing */}
+          <VStack spacing={4} align="stretch">
             {/* AI Chatbot */}
             <ORCAChatbot 
               equipmentContext={selectedEquipment}
@@ -496,13 +592,13 @@ export default function PREDATOREnhanced() {
           </VStack>
         </Grid>
 
-        {/* Selected Equipment Info */}
+        {/* Selected Equipment Info - Reduced spacing */}
         {selectedEquipment && (
           <Box
             mt={6}
             p={6}
             bg="dark.card"
-            borderRadius="xl"
+            borderRadius="lg"
             border="1px solid"
             borderColor="dark.border"
           >
@@ -527,7 +623,8 @@ export default function PREDATOREnhanced() {
                   Current Sensor Data (Mock Real-time)
                 </Text>
                 <SimpleGrid columns={{ base: 2, md: 4 }} spacing={4}>
-                  {Object.entries(currentSensorData).map(([sensor, value]) => (
+                  {currentSensorData && typeof currentSensorData === 'object' && 
+                   Object.entries(currentSensorData).map(([sensor, value]) => (
                     <Box
                       key={sensor}
                       p={3}
@@ -540,7 +637,7 @@ export default function PREDATOREnhanced() {
                         {sensor.replace('_', ' ')}
                       </Text>
                       <Text fontSize="lg" color="dark.text" fontWeight="700">
-                        {typeof value === 'number' ? value.toFixed(2) : value}
+                        {typeof value === 'number' ? value.toFixed(2) : String(value)}
                       </Text>
                     </Box>
                   ))}
@@ -549,7 +646,11 @@ export default function PREDATOREnhanced() {
             )}
           </Box>
         )}
+
+        {/* Demo Modal */}
+        <DemoModal isOpen={isDemoOpen} onClose={onDemoClose} />
       </Box>
     </Box>
   );
 }
+``

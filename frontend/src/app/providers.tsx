@@ -10,7 +10,7 @@ const theme = extendTheme({
     useSystemColorMode: false,
   },
   styles: {
-    global: (props) => ({
+    global: (props: { colorMode: 'light' | 'dark' }) => ({
       body: {
         bg: props.colorMode === 'dark' ? '#0a0a0a' : '#ffffff',
         color: props.colorMode === 'dark' ? '#ffffff' : '#1a1a1a',
@@ -251,7 +251,7 @@ const theme = extendTheme({
         },
       },
       variants: {
-        solid: (props) => ({
+        solid: (props: { colorMode: 'light' | 'dark' }) => ({
           bg: 'brand.500',
           color: 'white',
           boxShadow: '0 4px 12px rgba(59, 130, 246, 0.15)',
@@ -265,7 +265,7 @@ const theme = extendTheme({
             transform: 'translateY(0)',
           },
         }),
-        ghost: (props) => ({
+        ghost: (props: { colorMode: 'light' | 'dark' }) => ({
           color: props.colorMode === 'dark' ? 'gray.300' : 'gray.600',
           _hover: {
             bg: props.colorMode === 'dark' ? 'gray.700' : 'gray.100',
@@ -273,7 +273,7 @@ const theme = extendTheme({
             transform: 'translateY(-1px)',
           },
         }),
-        outline: (props) => ({
+        outline: (props: { colorMode: 'light' | 'dark' }) => ({
           borderColor: props.colorMode === 'dark' ? 'gray.600' : 'gray.200',
           color: props.colorMode === 'dark' ? 'gray.300' : 'gray.700',
           _hover: {
@@ -298,7 +298,7 @@ const theme = extendTheme({
       },
     },
     Card: {
-      baseStyle: (props) => ({
+      baseStyle: (props: { colorMode: 'light' | 'dark' }) => ({
         container: {
           bg: props.colorMode === 'dark' ? 'gray.800' : 'white',
           borderRadius: '2xl',

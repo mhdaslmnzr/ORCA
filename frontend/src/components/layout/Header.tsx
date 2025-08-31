@@ -12,8 +12,8 @@ import {
   Icon,
   SimpleGrid,
 } from '@chakra-ui/react';
-import { 
-  Bell, 
+import {
+  Bell,
   Wifi,
   Signal,
   Activity,
@@ -22,8 +22,8 @@ import {
 
 export default function Header() {
   return (
-    <Box 
-      borderBottom="1px solid" 
+    <Box
+      borderBottom="1px solid"
       borderColor="dark.border"
       px={6}
       py={4}
@@ -39,11 +39,25 @@ export default function Header() {
           <VStack align="start" spacing={0}>
             <Box
               position="relative"
-              _group
               cursor="pointer"
+              _hover={{
+                "& .orca-text": {
+                  transform: 'scale(1.05)',
+                  textShadow: '0 0 40px rgba(99, 102, 241, 0.5)'
+                },
+                "& .expanded-letters": {
+                  opacity: 1,
+                  transform: 'translateX(0)'
+                },
+                "& .hover-tagline": {
+                  opacity: 1,
+                  transform: 'translateY(0)'
+                }
+              }}
             >
               <HStack spacing={0} transition="all 0.3s ease">
                 <Text 
+                  className="orca-text"
                   fontSize="4xl" 
                   fontWeight="900" 
                   color="dark.text" 
@@ -52,24 +66,17 @@ export default function Header() {
                   bgClip="text"
                   textShadow="0 0 30px rgba(99, 102, 241, 0.3)"
                   transition="all 0.3s ease"
-                  _groupHover={{
-                    transform: 'scale(1.05)',
-                    textShadow: '0 0 40px rgba(99, 102, 241, 0.5)'
-                  }}
                 >
                   ORCA
                 </Text>
                 
                 {/* Hover Expanded Letters */}
                 <HStack 
+                  className="expanded-letters"
                   spacing={2} 
                   opacity={0} 
                   transform="translateX(-20px)"
                   transition="all 0.3s ease"
-                  _groupHover={{
-                    opacity: 1,
-                    transform: 'translateX(0)'
-                  }}
                 >
                   <Text 
                     fontSize="4xl" 
@@ -108,6 +115,7 @@ export default function Header() {
               
               {/* Hover Tagline */}
               <Text 
+                className="hover-tagline"
                 position="absolute"
                 top="100%"
                 left="0"
@@ -119,18 +127,14 @@ export default function Header() {
                 opacity={0}
                 transform="translateY(-10px)"
                 transition="all 0.3s ease"
-                _groupHover={{
-                  opacity: 1,
-                  transform: 'translateY(0)'
-                }}
                 whiteSpace="nowrap"
               >
                 Observe • Report • Comply • Alert
               </Text>
-            </Box>
-            
+        </Box>
+
             <Text 
-              fontSize="xs" 
+                fontSize="xs"
               color="dark.muted" 
               fontWeight="600" 
               textTransform="uppercase"
@@ -213,9 +217,9 @@ export default function Header() {
               w={8}
               h={8}
               borderRadius="lg"
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
               bg="dark.card"
               color="dark.muted"
               _hover={{ bg: 'rgba(99, 102, 241, 0.1)', color: 'dark.accent' }}
@@ -250,8 +254,8 @@ export default function Header() {
             borderColor="rgba(99, 102, 241, 0.2)"
             borderRadius="xl"
             backdropFilter="blur(10px)"
-          >
-            <HStack spacing={3}>
+            >
+              <HStack spacing={3}>
               <VStack align="end" spacing={0}>
                 <Text fontSize="sm" fontWeight="700" color="dark.text">
                   DMJ
@@ -263,16 +267,16 @@ export default function Header() {
                   Maria's Margheritas
                 </Text>
               </VStack>
-              <Avatar
-                size="sm"
+                <Avatar
+                  size="sm"
                 name="DMJ"
                 bg="linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)"
-                color="white"
+                  color="white"
                 fontWeight="bold"
                 border="2px solid"
                 borderColor="rgba(99, 102, 241, 0.3)"
               />
-            </HStack>
+              </HStack>
           </Box>
         </HStack>
       </Flex>

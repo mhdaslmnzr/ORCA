@@ -72,7 +72,7 @@ const SideNav: React.FC<SideNavProps> = ({ isExpanded, onToggle }) => {
   return (
     <Box
       position="fixed"
-      left={4}
+      left={3}
       top="50%"
       transform="translateY(-50%)"
       zIndex={40}
@@ -83,27 +83,27 @@ const SideNav: React.FC<SideNavProps> = ({ isExpanded, onToggle }) => {
         backdropFilter="blur(20px)"
         border="1px solid"
         borderColor={borderColor}
-        borderRadius="2xl"
-        p={isExpanded ? 4 : 3}
+        borderRadius="xl"
+        p={isExpanded ? 3 : 2}
         boxShadow="0 8px 32px rgba(0, 0, 0, 0.3)"
         transition="all 0.3s ease"
-        width={isExpanded ? '180px' : '70px'}
+        width={isExpanded ? '160px' : '60px'}
         overflow="hidden"
       >
-        <VStack spacing={3} align="stretch">
+        <VStack spacing={2} align="stretch">
           {/* Toggle Button - Simple Hamburger */}
           <Box
             onClick={onToggle}
             cursor="pointer"
-            p={2}
-            borderRadius="lg"
+            p={1.5}
+            borderRadius="md"
             _hover={{ bg: 'rgba(99, 102, 241, 0.1)' }}
             transition="all 0.2s"
             textAlign="center"
           >
             <Box
-              w="20px"
-              h="2px"
+              w="16px"
+              h="1.5px"
               bg="dark.accent"
               mb={1}
               mx="auto"
@@ -111,8 +111,8 @@ const SideNav: React.FC<SideNavProps> = ({ isExpanded, onToggle }) => {
               transform={isExpanded ? 'rotate(45deg) translate(2px, 2px)' : 'none'}
             />
             <Box
-              w="20px"
-              h="2px"
+              w="16px"
+              h="1.5px"
               bg="dark.accent"
               mb={1}
               mx="auto"
@@ -120,15 +120,15 @@ const SideNav: React.FC<SideNavProps> = ({ isExpanded, onToggle }) => {
               opacity={isExpanded ? 0 : 1}
             />
             <Box
-              w="20px"
-              h="2px"
+              w="16px"
+              h="1.5px"
               bg="dark.accent"
               mx="auto"
               transition="all 0.3s"
               transform={isExpanded ? 'rotate(-45deg) translate(2px, -2px)' : 'none'}
             />
           </Box>
-
+          
           {/* Navigation Items */}
           {navItems.map((item) => (
             <Tooltip
@@ -141,8 +141,8 @@ const SideNav: React.FC<SideNavProps> = ({ isExpanded, onToggle }) => {
               borderColor="dark.border"
             >
               <Box
-                p={3}
-                borderRadius="xl"
+                p={2}
+                borderRadius="lg"
                 cursor="pointer"
                 _hover={{ bg: 'rgba(99, 102, 241, 0.1)' }}
                 transition="all 0.2s"
@@ -151,17 +151,16 @@ const SideNav: React.FC<SideNavProps> = ({ isExpanded, onToggle }) => {
                 position="relative"
                 bg={item.status === 'active' ? 'rgba(99, 102, 241, 0.05)' : 'transparent'}
               >
-                <HStack spacing={3} align="center">
+                <HStack spacing={2} align="center">
                   <Icon
                     as={item.icon}
-                    boxSize={isExpanded ? 6 : 7}
+                    boxSize={isExpanded ? 5 : 6}
                     color={item.status === 'active' ? 'dark.accent' : 'dark.muted'}
-                    ml={isExpanded ? 2 : 0}
+                    ml={isExpanded ? 1 : 0}
                   />
-                  
                   {isExpanded && (
                     <Text
-                      fontSize="sm"
+                      fontSize="xs"
                       fontWeight="600"
                       color={item.status === 'active' ? 'dark.text' : 'dark.muted'}
                     >

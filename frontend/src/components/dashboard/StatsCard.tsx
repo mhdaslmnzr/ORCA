@@ -17,7 +17,7 @@ interface StatsCardProps {
   change?: string;
   changeType?: 'increase' | 'decrease' | 'neutral';
   icon: LucideIcon;
-  gradient?: string;
+  gradient?: string | boolean;
 }
 
 export default function StatsCard({
@@ -51,14 +51,11 @@ export default function StatsCard({
   };
 
   const getIconBg = () => {
-    if (gradient) {
-      return 'dark.accent';
-    }
     return 'dark.accent';
   };
 
   const getCardGradient = () => {
-    if (gradient) {
+    if (gradient && typeof gradient === 'string') {
       return gradient;
     }
     return 'dark.card';
@@ -66,11 +63,11 @@ export default function StatsCard({
 
   return (
     <Box
-      bg={gradient ? getCardGradient() : 'dark.card'}
+      bg={getCardGradient()}
       border="1px solid"
       borderColor="dark.border"
-      borderRadius="2xl"
-      p={6}
+      borderRadius="xl"
+      p={4}
       shadow="sm"
       position="relative"
       overflow="hidden"
@@ -85,70 +82,63 @@ export default function StatsCard({
       {/* Subtle Background Elements */}
       <Box
         position="absolute"
-        top={-8}
-        right={-8}
-        w="80px"
-        h="80px"
+        top={-6}
+        right={-6}
+        w="60px"
+        h="60px"
         bg="rgba(99, 102, 241, 0.1)"
         borderRadius="full"
         opacity={0.3}
       />
       
-      <VStack spacing={5} align="stretch" position="relative" zIndex={1}>
+      <VStack spacing={3} align="stretch" position="relative" zIndex={1}>
         <Flex align="center" justify="space-between">
           <Text 
             fontSize="xs" 
+            color="dark.muted" 
             fontWeight="600" 
-            color="dark.muted"
-            textTransform="uppercase"
-            letterSpacing="wide"
+            textTransform="uppercase" 
+            letterSpacing="wider"
+            opacity={0.8}
           >
             {title}
           </Text>
+          
           <Box
-            w={12}
-            h={12}
-            borderRadius="xl"
+            p={2}
+            bg={getIconBg()}
+            borderRadius="lg"
             display="flex"
             alignItems="center"
             justifyContent="center"
-            bg={getIconBg()}
             color="white"
-            shadow="md"
+            boxShadow="0 4px 12px rgba(99, 102, 241, 0.3)"
           >
-            <Icon as={IconComponent} boxSize={6} />
+            <IconComponent size={16} />
           </Box>
         </Flex>
-
-        <VStack align="start" spacing={3}>
+        
+        <VStack spacing={1} align="start">
           <Text 
-            fontSize="4xl" 
-            fontWeight="700" 
+            fontSize="2xl" 
+            fontWeight="900" 
             color="dark.text"
             lineHeight="1"
-            letterSpacing="tight"
           >
             {value}
           </Text>
           
           {change && (
-            <HStack spacing={2}>
-              <Box
-                w={6}
-                h={6}
-                borderRadius="md"
-                bg={getChangeColor()}
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                color="white"
-              >
-                <Icon as={getChangeIcon()} boxSize={3} />
-              </Box>
-              <Text
-                fontSize="sm"
+            <HStack spacing={1}>
+              <Icon 
+                as={getChangeIcon()} 
+                boxSize={3} 
+                color={getChangeColor()} 
+              />
+              <Text 
+                fontSize="xs" 
+                color={getChangeColor()} 
                 fontWeight="600"
-                color={getChangeColor()}
               >
                 {change}
               </Text>

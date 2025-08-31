@@ -70,9 +70,9 @@ export default function EquipmentCard({ equipment }: EquipmentCardProps) {
 
   return (
     <Box
-      p={6}
+      p={4}
       bg="dark.card"
-      borderRadius="xl"
+      borderRadius="lg"
       border="1px solid"
       borderColor="dark.border"
       _hover={{
@@ -89,42 +89,40 @@ export default function EquipmentCard({ equipment }: EquipmentCardProps) {
         position="absolute"
         top={0}
         right={0}
-        w={3}
-        h={3}
+        w={2}
+        h={2}
         bg={`${getStatusColor(equipment.status)}.400`}
         borderRadius="full"
         boxShadow="0 0 10px rgba(0, 0, 0, 0.5)"
       />
 
-      {/* Header */}
-      <VStack spacing={3} align="stretch" mb={4}>
+        {/* Header */}
+      <VStack spacing={2} align="stretch" mb={3}>
         <HStack justify="space-between" align="start">
           <VStack align="start" spacing={1} flex={1}>
-            <Text fontSize="lg" fontWeight="700" color="dark.text" noOfLines={2}>
+            <Text fontSize="md" fontWeight="700" color="dark.text" noOfLines={2}>
               {equipment.name}
             </Text>
             <Text fontSize="sm" color="dark.muted" fontWeight="500">
               {equipment.fd_type}
-            </Text>
+              </Text>
           </VStack>
-          
-          <Badge
+            <Badge
             colorScheme={getStatusColor(equipment.status)}
-            variant="solid"
+              variant="solid"
             borderRadius="full"
-            px={3}
-            py={1}
-            fontSize="xs"
+            px={2}
+              py={1}
+              fontSize="xs"
             fontWeight="600"
-          >
+            >
             <HStack spacing={1}>
               <Icon as={getStatusIcon(equipment.status)} boxSize={3} />
               <Text>{equipment.status}</Text>
             </HStack>
-          </Badge>
+            </Badge>
         </HStack>
-
-        {/* Category Badge */}
+        
         {equipment.category && (
           <Badge
             colorScheme={getCategoryColor(equipment.category)}
@@ -139,76 +137,85 @@ export default function EquipmentCard({ equipment }: EquipmentCardProps) {
             {getCategoryDisplayName(equipment.category)}
           </Badge>
         )}
-      </VStack>
+          </VStack>
 
       {/* Health & RUL */}
-      <VStack spacing={3} align="stretch" mb={4}>
+      <VStack spacing={3} align="stretch" mb={3}>
         <Box>
-          <HStack justify="space-between" mb={2}>
-            <Text fontSize="sm" color="dark.muted" fontWeight="500">
-              Health Status
-            </Text>
-            <Text fontSize="sm" color="dark.text" fontWeight="600">
+          <HStack justify="space-between" mb={1}>
+            <Text fontSize="xs" color="dark.muted" fontWeight="500">
+                Health Status
+              </Text>
+            <Text fontSize="xs" color="dark.text" fontWeight="600">
               {equipment.health.toFixed(1)}%
             </Text>
-          </HStack>
+            </HStack>
           <Progress
             value={equipment.health}
             colorScheme={equipment.health >= 80 ? 'green' : equipment.health >= 60 ? 'yellow' : 'red'}
             borderRadius="full"
             size="sm"
-            bg="dark.sidebar"
+            height="6px"
           />
         </Box>
-
-        <HStack justify="space-between">
-          <Text fontSize="sm" color="dark.muted" fontWeight="500">
-            Remaining Life
-          </Text>
-          <Text fontSize="sm" color="dark.accent" fontWeight="600">
-            {formatRUL(equipment.rul)}
-          </Text>
-        </HStack>
-      </VStack>
+        
+        <Box>
+          <HStack justify="space-between" mb={1}>
+            <Text fontSize="xs" color="dark.muted" fontWeight="500">
+              Remaining Life
+            </Text>
+            <Text fontSize="xs" color="dark.text" fontWeight="600">
+              {formatRUL(equipment.rul)}
+            </Text>
+          </HStack>
+          <Box
+            bg="rgba(99, 102, 241, 0.1)"
+            border="1px solid"
+            borderColor="rgba(99, 102, 241, 0.3)"
+            borderRadius="md"
+            p={2}
+            textAlign="center"
+          >
+            <Text fontSize="xs" color="dark.accent" fontWeight="600">
+              {equipment.rul >= 8760 ? `${Math.round(equipment.rul / 8760)}y` :
+               equipment.rul >= 168 ? `${Math.round(equipment.rul / 168)}w` :
+               equipment.rul >= 24 ? `${Math.round(equipment.rul / 24)}d` :
+               `${equipment.rul}h`}
+            </Text>
+          </Box>
+        </Box>
+        </VStack>
 
       {/* Location & Manufacturer */}
-      <VStack spacing={2} align="stretch" mb={4}>
-        {equipment.location && (
-          <HStack spacing={2}>
-            <Icon as={MapPin} boxSize={4} color="dark.muted" />
-            <Text fontSize="sm" color="dark.muted" noOfLines={1}>
-              {equipment.location}
+      <VStack spacing={2} align="stretch" mb={3}>
+            <HStack spacing={2}>
+          <Icon as={MapPin} boxSize={3} color="dark.muted" />
+          <Text fontSize="xs" color="dark.muted" noOfLines={1}>
+            {equipment.location || 'Production Floor'}
             </Text>
           </HStack>
-        )}
-        
-        {equipment.manufacturer && (
-          <HStack spacing={2}>
-            <Icon as={Building} boxSize={4} color="dark.muted" />
-            <Text fontSize="sm" color="dark.muted" noOfLines={1}>
-              {equipment.manufacturer}
-            </Text>
-          </HStack>
-        )}
+          
+            <HStack spacing={2}>
+          <Icon as={Building} boxSize={3} color="dark.muted" />
+          <Text fontSize="xs" color="dark.muted" noOfLines={1}>
+            {equipment.manufacturer || 'Unknown'}
+          </Text>
+            </HStack>
       </VStack>
 
       {/* Maintenance Info */}
-      <VStack spacing={2} align="stretch" mb={4}>
-        <HStack justify="space-between">
-          <Text fontSize="xs" color="dark.muted" fontWeight="500">
-            Last Maintenance
-          </Text>
-          <Text fontSize="xs" color="dark.text" fontWeight="500">
-            {equipment.last_maintenance}
-          </Text>
-        </HStack>
-        
-        <HStack justify="space-between">
-          <Text fontSize="xs" color="dark.muted" fontWeight="500">
-            Next Maintenance
-          </Text>
-          <Text fontSize="xs" color="dark.accent" fontWeight="500">
-            {equipment.next_maintenance}
+      <VStack spacing={2} align="stretch" mb={3}>
+        <HStack spacing={2}>
+          <Icon as={Clock} boxSize={3} color="dark.muted" />
+          <Text fontSize="xs" color="dark.muted">
+            Last: {equipment.last_maintenance || 'Unknown'}
+            </Text>
+          </HStack>
+
+        <HStack spacing={2}>
+          <Icon as={Zap} boxSize={3} color="dark.muted" />
+          <Text fontSize="xs" color="dark.muted">
+            Next: {equipment.next_maintenance || 'Unknown'}
           </Text>
         </HStack>
       </VStack>
@@ -216,33 +223,38 @@ export default function EquipmentCard({ equipment }: EquipmentCardProps) {
       {/* Alerts */}
       {equipment.alerts && equipment.alerts.length > 0 && (
         <Box
-          p={2}
           bg="rgba(239, 68, 68, 0.1)"
-          border="1px solid"
-          borderColor="red.400"
+              border="1px solid"
+          borderColor="rgba(239, 68, 68, 0.3)"
           borderRadius="md"
+          p={2}
         >
-          <HStack spacing={2}>
-            <Icon as={AlertTriangle} boxSize={4} color="red.400" />
-            <Text fontSize="xs" color="red.400" fontWeight="500">
-              {equipment.alerts[0]}
-              {equipment.alerts.length > 1 && ` (+${equipment.alerts.length - 1} more)`}
+          <HStack spacing={2} mb={1}>
+            <Icon as={AlertTriangle} boxSize={3} color="red.400" />
+            <Text fontSize="xs" color="red.400" fontWeight="600">
+              {equipment.alerts.length} Alert{equipment.alerts.length > 1 ? 's' : ''}
             </Text>
-          </HStack>
-        </Box>
-      )}
+                </HStack>
+          <Text fontSize="xs" color="dark.muted" noOfLines={2}>
+            {equipment.alerts[0]}
+          </Text>
+            </Box>
+          )}
 
       {/* Cycle Count */}
-      {equipment.cycle_count && (
-        <HStack justify="space-between" pt={2} borderTop="1px solid" borderColor="dark.border">
-          <Text fontSize="xs" color="dark.muted" fontWeight="500">
-            Cycles
-          </Text>
-          <Text fontSize="xs" color="dark.text" fontWeight="600">
-            {equipment.cycle_count.toLocaleString()}
-          </Text>
-        </HStack>
-      )}
+      <Box
+        bg="rgba(99, 102, 241, 0.05)"
+        border="1px solid"
+        borderColor="rgba(99, 102, 241, 0.2)"
+        borderRadius="md"
+        p={2}
+        textAlign="center"
+        mt={2}
+      >
+        <Text fontSize="xs" color="dark.accent" fontWeight="600">
+          Cycle Count: {equipment.cycle_count?.toLocaleString() || '0'}
+        </Text>
+      </Box>
     </Box>
   );
 }
