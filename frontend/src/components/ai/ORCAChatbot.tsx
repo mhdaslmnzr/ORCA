@@ -42,7 +42,7 @@ import {
   Trash2,
   RefreshCw,
 } from 'lucide-react';
-import { formatTimeSafe } from '../../lib/utils';
+import { formatTimeSafe } from '../../lib/utils.ts';
 
 interface ChatMessage {
   id: string;
