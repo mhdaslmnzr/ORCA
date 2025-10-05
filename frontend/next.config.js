@@ -13,6 +13,8 @@ const nextConfig = {
       ...(config.resolve.alias || {}),
       '@': path.resolve(__dirname, 'src'),
     };
+    // Also ensure extensions resolution includes TS/TSX
+    config.resolve.extensions = Array.from(new Set([".ts", ".tsx", ".js", ".jsx", ".json", ...config.resolve.extensions]));
     return config;
   },
 };
