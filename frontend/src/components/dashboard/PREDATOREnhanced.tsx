@@ -46,8 +46,8 @@ import MaintenanceTasks from '../ai/MaintenanceTasks';
 import Header from '../layout/Header';
 import SideNav from '../layout/SideNav';
 import DemoModal from './DemoModal';
-import { Equipment, SensorData } from '../../types';
-import { api } from '../../lib/api';
+import { Equipment, SensorData } from '@/types';
+import { api } from '@/lib/api';
 
 export default function PREDATOREnhanced() {
   const [isSideNavExpanded, setIsSideNavExpanded] = useState(false);

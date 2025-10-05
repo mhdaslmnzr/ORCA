@@ -60,7 +60,7 @@ import {
   Lightbulb,
   Activity,
 } from 'lucide-react';
-import { MaintenanceTask } from '../../types';
+import { MaintenanceTask } from '@/types';
 
 interface MaintenanceTasksProps {
   equipmentId?: string;

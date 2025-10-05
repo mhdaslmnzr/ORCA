@@ -19,7 +19,7 @@ import {
   Clock,
   Zap
 } from 'lucide-react';
-import { Equipment } from '../../types';
+import { Equipment } from '@/types';
 
 interface EquipmentCardProps {
   equipment: Equipment;
