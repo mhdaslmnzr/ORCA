@@ -63,7 +63,8 @@ app = FastAPI(title="ORCA PREDATOR API", version="1.0.0")
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["http://localhost:3000", "https://orca-ochre-chi.vercel.app"],
+    allow_origin_regex=r"^https://.*-orca-ochre-chi\.vercel\.app$",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
