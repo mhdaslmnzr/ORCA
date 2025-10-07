@@ -63,7 +63,7 @@ app = FastAPI(title="ORCA PREDATOR API", version="1.0.0")
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "https://orca-ochre-chi.vercel.app"],
+    allow_origins=["http://localhost:3000", "https://orca-ochre-chi.vercel.app", "https://vercel.com/mhdaslmnzrs-projects/orca/3oWtXqD5AuhBGdjrwbSB45cfg2iU"],
     allow_origin_regex=r"^https://.*-orca-ochre-chi\.vercel\.app$",
     allow_credentials=True,
     allow_methods=["*"],
@@ -151,7 +151,20 @@ async def get_equipment_by_id(equipment_id: str):
 async def get_sensor_data(equipment_id: str):
     """Get sensor data for specific equipment"""
     if equipment_id not in mock_sensor_data:
-        raise HTTPException(status_code=404, detail="Sensor data not found")
+        # Generate sensor data on-demand if equipment exists but sensor data is missing
+        equipment = next((eq for eq in mock_equipment if eq['equipment_id'] == equipment_id), None)
+        if equipment:
+            sensor_data = marias_margheritas_mock.generate_sensor_data(
+                equipment_id, equipment['name']
+            )
+            mock_sensor_data[equipment_id] = sensor_data
+            return sensor_data
+        else:
+            available_ids = [eq['equipment_id'] for eq in mock_equipment]
+            raise HTTPException(
+                status_code=404, 
+                detail=f"Equipment {equipment_id} not found. Available equipment IDs: {available_ids[:10]}"
+            )
     return mock_sensor_data[equipment_id]
 
 @app.get("/api/mock/summary")

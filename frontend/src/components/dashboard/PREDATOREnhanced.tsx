@@ -95,6 +95,13 @@ export default function PREDATOREnhanced() {
       }
     } catch (error) {
       console.error('Error fetching sensor data:', error);
+      toast({
+        title: 'Sensor Data Unavailable',
+        description: `Unable to load sensor data for ${equipmentId}. Please try refreshing the page.`,
+        status: 'warning',
+        duration: 5000,
+        isClosable: true,
+      });
     }
   };
 

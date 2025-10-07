@@ -77,7 +77,10 @@ class MariasMargheritasMockData:
             "baking_cooking": "BC",
             "packaging_output": "PO"
         }
-        machine_num = random.randint(100, 999)
+        
+        # Use deterministic numbering based on machine name to ensure consistency
+        machine_index = self.equipment_categories[category]["machines"].index(machine_name)
+        machine_num = 100 + machine_index  # Start from 100, increment by 1
         return f"{category_code[category]}-{machine_num}"
 
     def generate_equipment_data(self) -> List[Dict[str, Any]]:
