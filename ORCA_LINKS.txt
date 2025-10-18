@@ -1,0 +1,48 @@
+ORCA - Operational Risk & Compliance Assistant
+
+==========================================
+🌐 LIVE APPLICATION LINKS
+==========================================
+
+Frontend Dashboard:
+https://orca-ochre-chi.vercel.app/
+
+Backend API:
+https://orca-backend-lfcl.onrender.com/
+
+==========================================
+🔗 API ENDPOINTS
+==========================================
+
+Get Equipment Data:
+https://orca-backend-lfcl.onrender.com/api/mock/equipment
+
+Fetch Summary Data:
+https://orca-backend-lfcl.onrender.com/api/mock/summary
+
+API Documentation:
+https://orca-backend-lfcl.onrender.com/docs
+
+==========================================
+📁 SOURCE CODE & RESOURCES
+==========================================
+
+GitHub Repository:
+https://github.com/mhdaslmnzr/ORCA
+
+ML Code (Google Colab):
+https://colab.research.google.com/drive/1Z7n77Q2axlgBnLaxi5VV5AlObQqBhWTN
+
+NASA C-MAPSS Dataset:
+https://www.kaggle.com/datasets/behrad3d/nasa-cmaps?resource=download
+
+==========================================
+🚀 QUICK START GUIDE
+==========================================
+
+Access Frontend:
+   - Go to: https://orca-ochre-chi.vercel.app/
+   - Click "Check Backend" button to activate backend
+   - Wait for connection confirmation
+
+
