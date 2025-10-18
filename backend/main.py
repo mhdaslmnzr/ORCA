@@ -56,7 +56,7 @@ except Exception as e:
     gemini_model = None
 
 # Import our new mock company data generator
-from mock_company import marias_margheritas_mock
+from mock_company import aerotech_industries_mock
 
 app = FastAPI(title="ORCA PREDATOR API", version="1.0.0")
 
@@ -104,23 +104,23 @@ mock_sensor_data = {}
 mock_summary = {}
 
 def initialize_mock_data():
-    """Initialize mock data using Maria's Margheritas generator"""
+    """Initialize mock data using AeroTech Industries generator"""
     global mock_equipment, mock_sensor_data, mock_summary
     
     # Generate equipment data
-    mock_equipment = marias_margheritas_mock.generate_equipment_data()
+    mock_equipment = aerotech_industries_mock.generate_equipment_data()
     
     # Generate sensor data for each equipment
     for equipment in mock_equipment:
         equipment_id = equipment['equipment_id']
-        mock_sensor_data[equipment_id] = marias_margheritas_mock.generate_sensor_data(
+        mock_sensor_data[equipment_id] = aerotech_industries_mock.generate_sensor_data(
             equipment_id, equipment['name']
         )
     
     # Generate summary data
-    mock_summary = marias_margheritas_mock.generate_summary_data()
+    mock_summary = aerotech_industries_mock.generate_summary_data()
     
-    print(f"🍕 Initialized Maria's Margheritas manufacturing unit with {len(mock_equipment)} machines")
+    print(f"✈️ Initialized AeroTech Industries manufacturing unit with {len(mock_equipment)} machines")
 
 # Initialize mock data on startup
 initialize_mock_data()
@@ -128,7 +128,7 @@ initialize_mock_data()
 @app.get("/")
 async def root():
     return {
-        "message": "ORCA PREDATOR API - Maria's Margheritas Manufacturing Unit",
+        "message": "ORCA PREDATOR API - AeroTech Industries Manufacturing Unit",
         "version": "1.0.0",
         "status": "active",
         "equipment_count": len(mock_equipment)
@@ -154,7 +154,7 @@ async def get_sensor_data(equipment_id: str):
         # Generate sensor data on-demand if equipment exists but sensor data is missing
         equipment = next((eq for eq in mock_equipment if eq['equipment_id'] == equipment_id), None)
         if equipment:
-            sensor_data = marias_margheritas_mock.generate_sensor_data(
+            sensor_data = aerotech_industries_mock.generate_sensor_data(
                 equipment_id, equipment['name']
             )
             mock_sensor_data[equipment_id] = sensor_data
@@ -178,12 +178,12 @@ async def simulate_update():
     global mock_equipment, mock_sensor_data, mock_summary
     
     # Simulate equipment degradation
-    mock_equipment = marias_margheritas_mock.simulate_equipment_degradation(mock_equipment)
+    mock_equipment = aerotech_industries_mock.simulate_equipment_degradation(mock_equipment)
     
     # Update sensor data with some variation
     for equipment in mock_equipment:
         equipment_id = equipment['equipment_id']
-        base_sensor_data = marias_margheritas_mock.generate_sensor_data(
+        base_sensor_data = aerotech_industries_mock.generate_sensor_data(
             equipment_id, equipment['name']
         )
         
@@ -196,7 +196,7 @@ async def simulate_update():
         mock_sensor_data[equipment_id] = base_sensor_data
     
     # Update summary
-    mock_summary = marias_margheritas_mock.generate_summary_data()
+    mock_summary = aerotech_industries_mock.generate_summary_data()
     
     return {
         "message": "Simulation completed",
@@ -268,74 +268,74 @@ def generate_mock_maintenance_tasks(equipment_id: str, sensor_data: Dict[str, An
     """Generates mock maintenance tasks based on equipment ID, sensor data, and RUL."""
     maintenance_tasks = []
     
-    if "Oven" in equipment_id or "Heater" in equipment_id:
+    if "Test Stand" in equipment_id or "Engine" in equipment_id:
         maintenance_tasks.extend([
             {
-                "task": "Check heating elements for wear",
+                "task": "Check engine mounting bolts and connections",
                 "priority": "high" if rul < 1000 else "medium",
-                "estimated_duration": "2 hours",
-                "required_tools": ["Multimeter", "Thermal camera", "Cleaning supplies"],
-                "description": "Inspect heating elements for signs of degradation and clean any buildup"
+                "estimated_duration": "3 hours",
+                "required_tools": ["Torque wrench", "Inspection mirror", "Safety harness"],
+                "description": "Inspect engine mounting hardware for signs of fatigue and ensure proper torque specifications"
             },
             {
-                "task": "Calibrate temperature sensors",
+                "task": "Calibrate thrust measurement sensors",
                 "priority": "medium",
-                "estimated_duration": "1 hour",
-                "required_tools": ["Calibration kit", "Reference thermometer"],
-                "description": "Verify temperature sensor accuracy and recalibrate if necessary"
+                "estimated_duration": "2 hours",
+                "required_tools": ["Calibration kit", "Reference load cell", "Multimeter"],
+                "description": "Verify thrust sensor accuracy and recalibrate if necessary"
             }
         ])
     
-    if "Mixer" in equipment_id or "Kneader" in equipment_id:
+    if "CNC" in equipment_id or "Lathe" in equipment_id:
         maintenance_tasks.extend([
             {
-                "task": "Inspect motor bearings",
+                "task": "Inspect spindle bearings and lubrication",
                 "priority": "high" if rul < 1000 else "medium",
-                "estimated_duration": "3 hours",
-                "required_tools": ["Bearing puller", "Grease gun", "Vibration meter"],
+                "estimated_duration": "4 hours",
+                "required_tools": ["Bearing puller", "Precision grease", "Vibration analyzer"],
                 "description": "Check bearing condition and replace if showing signs of wear"
             },
             {
-                "task": "Lubricate moving parts",
+                "task": "Calibrate tool positioning system",
                 "priority": "medium",
-                "estimated_duration": "1 hour",
-                "required_tools": ["Food-grade lubricant", "Cleaning cloth"],
-                "description": "Apply appropriate lubrication to all moving components"
+                "estimated_duration": "2 hours",
+                "required_tools": ["Calibration ball", "Dial indicator", "Precision square"],
+                "description": "Verify tool positioning accuracy and recalibrate if needed"
             }
         ])
     
-    if "Conveyor" in equipment_id:
+    if "Assembly Line" in equipment_id or "Robot" in equipment_id:
         maintenance_tasks.extend([
             {
-                "task": "Check belt tension and alignment",
+                "task": "Check robotic arm joint lubrication",
                 "priority": "medium",
                 "estimated_duration": "2 hours",
-                "required_tools": ["Tension gauge", "Straight edge", "Wrenches"],
-                "description": "Adjust belt tension and ensure proper alignment for smooth operation"
+                "required_tools": ["High-precision grease", "Cleaning supplies", "Safety equipment"],
+                "description": "Inspect and lubricate all robotic arm joints for smooth operation"
             },
             {
-                "task": "Inspect drive motor and gearbox",
+                "task": "Calibrate vision system and sensors",
                 "priority": "medium",
-                "estimated_duration": "2 hours",
-                "required_tools": ["Multimeter", "Gear oil", "Cleaning supplies"],
-                "description": "Check motor performance and gearbox oil level"
+                "estimated_duration": "3 hours",
+                "required_tools": ["Calibration targets", "Software tools", "Test fixtures"],
+                "description": "Verify vision system accuracy and sensor calibration"
             }
         ])
     
-    # Add general maintenance tasks
+    # Add general aerospace maintenance tasks
     maintenance_tasks.extend([
         {
             "task": "Clean equipment thoroughly",
             "priority": "medium",
             "estimated_duration": "1 hour",
-            "required_tools": ["Cleaning supplies", "Sanitizer", "Safety equipment"],
-            "description": "Perform thorough cleaning following food safety protocols"
+            "required_tools": ["Cleaning supplies", "Safety equipment", "Compressed air"],
+            "description": "Perform thorough cleaning following aerospace manufacturing protocols"
         },
         {
-            "task": "Update maintenance log",
+            "task": "Update maintenance log and documentation",
             "priority": "low",
             "estimated_duration": "15 minutes",
-            "required_tools": ["Maintenance log", "Computer/tablet"],
+            "required_tools": ["Maintenance log", "Computer/tablet", "Camera"],
             "description": "Document all maintenance activities and update digital records"
         }
     ])
@@ -353,7 +353,7 @@ async def generate_maintenance_tasks(equipment_id: str, equipment_data: Dict[str
             try:
                 # Use Gemini Pro API for intelligent maintenance task generation
                 prompt = f"""
-                You are ORCA AI, an expert manufacturing maintenance planner for Maria's Margheritas pizza manufacturing unit.
+                You are ORCA AI, an expert manufacturing maintenance planner for AeroTech Industries aircraft manufacturing unit.
                 
                 Equipment ID: {equipment_id}
                 Sensor Data: {sensor_data}
@@ -373,7 +373,7 @@ async def generate_maintenance_tasks(equipment_id: str, equipment_data: Dict[str
                 - task_name, priority, estimated_time, required_tools, required_parts, 
                   step_by_step_instructions, safety_notes, cost_estimate, risk_assessment
                 
-                Focus on pizza manufacturing equipment maintenance best practices.
+                Focus on aerospace manufacturing equipment maintenance best practices.
                 """
                 
                 gemini_response = gemini_model.generate_content(prompt).text
@@ -436,7 +436,7 @@ async def ai_chatbot(message: Dict[str, Any]):
                 "response": "Gemini Pro API is not configured. Please check your environment variables.",
                 "timestamp": datetime.now().isoformat(),
                 "ai_model": "N/A",
-                "context": "Maria's Margheritas Manufacturing Unit",
+                "context": "AeroTech Industries Manufacturing Unit",
                 "equipment_context": equipment_context
             }
 
@@ -445,7 +445,7 @@ async def ai_chatbot(message: Dict[str, Any]):
             try:
                 # Use Gemini Pro API for intelligent responses
                 prompt = f"""
-                You are ORCA AI, an intelligent manufacturing maintenance assistant for Maria's Margheritas pizza manufacturing unit.
+                You are ORCA AI, an intelligent manufacturing maintenance assistant for AeroTech Industries aircraft manufacturing unit.
                 
                 Context: User is asking about equipment {equipment_context}
                 User Question: {user_message}
@@ -457,7 +457,7 @@ async def ai_chatbot(message: Dict[str, Any]):
                 - Safety considerations
                 - Cost-effective solutions
                 
-                Keep response under 200 words and be specific to manufacturing equipment.
+                Keep response under 200 words and be specific to aerospace manufacturing equipment.
                 """
                 
                 response = gemini_model.generate_content(prompt).text
@@ -478,7 +478,7 @@ async def ai_chatbot(message: Dict[str, Any]):
             try:
                 # Use Gemini Pro API for intelligent responses
                 prompt = f"""
-                You are ORCA AI, an intelligent manufacturing maintenance assistant for Maria's Margheritas pizza manufacturing unit.
+                You are ORCA AI, an intelligent manufacturing maintenance assistant for AeroTech Industries aircraft manufacturing unit.
                 
                 User Question: {user_message}
                 
@@ -489,7 +489,7 @@ async def ai_chatbot(message: Dict[str, Any]):
                 - Quality control
                 - General manufacturing insights
                 
-                Keep response under 200 words and be specific to pizza manufacturing.
+                Keep response under 200 words and be specific to aerospace manufacturing.
                 """
                 
                 response = gemini_model.generate_content(prompt).text
@@ -500,13 +500,13 @@ async def ai_chatbot(message: Dict[str, Any]):
                 if "maintenance" in user_message.lower():
                     response = "I can help you with maintenance scheduling, equipment health monitoring, and predictive maintenance insights. Please select an equipment first to get specific recommendations."
                 elif "equipment" in user_message.lower():
-                    response = "I'm monitoring 25 manufacturing machines across sauce production, dough making, assembly, baking, and packaging. Please select an equipment to get detailed information."
+                    response = "I'm monitoring 25 manufacturing machines across material processing, component fabrication, aircraft assembly, engine testing, and final inspection. Please select an equipment to get detailed information."
                 elif "health" in user_message.lower() or "status" in user_message.lower():
                     response = "Current equipment health overview: Most machines are operating within normal parameters. I've identified a few that need attention. Please select an equipment to see detailed health metrics."
                 elif "production" in user_message.lower():
-                    response = "Production is running at 92% efficiency today. We've completed 48 batches with a quality score of 95.2%. How can I help optimize production further?"
+                    response = "Production is running at 92% efficiency today. We've completed 48 aircraft components with a quality score of 95.2%. How can I help optimize production further?"
                 elif "alert" in user_message.lower():
-                    response = "I'm monitoring 5 active alerts. The most critical is the Tunnel Oven #2 temperature variance. Please select an equipment to see detailed alerts and recommendations."
+                    response = "I'm monitoring 5 active alerts. The most critical is the Engine Test Stand #2 temperature variance. Please select an equipment to see detailed alerts and recommendations."
                 else:
                     response = "I'm ORCA AI, your manufacturing intelligence assistant. I can help with equipment monitoring, maintenance planning, production optimization, and quality control. Please select an equipment first to get specific insights."
         
@@ -514,7 +514,7 @@ async def ai_chatbot(message: Dict[str, Any]):
             "response": response,
             "timestamp": datetime.now().isoformat(),
             "ai_model": "ORCA AI (Gemini Pro)",
-            "context": "Maria's Margheritas Manufacturing Unit",
+            "context": "AeroTech Industries Manufacturing Unit",
             "equipment_context": equipment_context
         }
         
@@ -554,6 +554,6 @@ async def analyze_file(file_data: Dict[str, Any]):
 
 if __name__ == "__main__":
     import uvicorn
-    print("🍕 Starting ORCA PREDATOR API - Maria's Margheritas Manufacturing Unit")
+    print("✈️ Starting ORCA PREDATOR API - AeroTech Industries Manufacturing Unit")
     print("=" * 70)
     uvicorn.run(app, host="0.0.0.0", port=8000)

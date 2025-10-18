@@ -264,7 +264,7 @@ export default function Header() {
                   Operations Manager
                 </Text>
                 <Text fontSize="xs" color="dark.accent" fontWeight="600">
-                  Maria's Margheritas
+                  AeroTech Industries
                 </Text>
               </VStack>
                 <Avatar

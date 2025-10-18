@@ -54,11 +54,11 @@ export default function EquipmentCard({ equipment }: EquipmentCardProps) {
   const getCategoryColor = (category?: string) => {
     if (!category) return 'blue';
     switch (category) {
-      case 'sauce_ingredient': return 'orange';
-      case 'dough_production': return 'yellow';
-      case 'assembly_production': return 'green';
-      case 'baking_cooking': return 'red';
-      case 'packaging_output': return 'purple';
+      case 'material_processing': return 'orange';
+      case 'component_fabrication': return 'yellow';
+      case 'aircraft_assembly': return 'green';
+      case 'engine_testing': return 'red';
+      case 'final_inspection': return 'purple';
       default: return 'blue';
     }
   };

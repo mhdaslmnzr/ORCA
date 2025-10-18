@@ -1,6 +1,6 @@
 """
-Maria's Margheritas Pizza Manufacturing Unit - Mock Data Generator
-Generates realistic manufacturing equipment data for a medium-scale pizza company
+AeroTech Industries Aircraft Manufacturing Unit - Mock Data Generator
+Generates realistic manufacturing equipment data for a medium-scale aerospace company
 """
 
 import random
@@ -9,55 +9,59 @@ from datetime import datetime, timedelta
 from typing import Dict, List, Any
 import numpy as np
 
-class MariasMargheritasMockData:
+class AeroTechIndustriesMockData:
     def __init__(self):
         self.equipment_categories = {
-            "sauce_ingredient": {
+            "material_processing": {
                 "count": 6,
                 "machines": [
-                    "Sauce Mixer #1", "Sauce Mixer #2", "Cheese Grater #1", 
-                    "Cheese Grater #2", "Ingredient Dispenser", "Sauce Heater"
+                    "Composite Material Mixer #1", "Composite Material Mixer #2", "Metal Alloy Processor #1", 
+                    "Metal Alloy Processor #2", "Chemical Dispenser", "Material Heater"
                 ]
             },
-            "dough_production": {
+            "component_fabrication": {
                 "count": 5,
                 "machines": [
-                    "Dough Mixer", "Dough Kneader", "Dough Roller", 
-                    "Proofing Chamber", "Dough Cutter"
+                    "CNC Milling Machine", "Precision Lathe", "Hydraulic Press", 
+                    "Heat Treatment Chamber", "Component Cutter"
                 ]
             },
-            "assembly_production": {
+            "aircraft_assembly": {
                 "count": 8,
                 "machines": [
-                    "Assembly Conveyor #1", "Assembly Conveyor #2", "Assembly Conveyor #3",
-                    "Sauce Applicator", "Cheese Applicator", "Topping Robot #1",
-                    "Topping Robot #2", "Quality Scanner"
+                    "Assembly Line #1", "Assembly Line #2", "Assembly Line #3",
+                    "Rivet Applicator", "Welding Robot #1", "Welding Robot #2",
+                    "Quality Inspection Scanner", "Surface Treatment Unit"
                 ]
             },
-            "baking_cooking": {
+            "engine_testing": {
                 "count": 4,
                 "machines": [
-                    "Tunnel Oven #1", "Tunnel Oven #2", "Temperature Controller",
+                    "Engine Test Stand #1", "Engine Test Stand #2", "Temperature Controller",
                     "Heat Recovery System"
                 ]
             },
-            "packaging_output": {
+            "final_inspection": {
                 "count": 2,
                 "machines": [
-                    "Packaging Line", "Palletizer"
+                    "Quality Control Line", "Aircraft Positioning System"
                 ]
             }
         }
         
         self.sensor_types = {
-            "temperature": {"min": 20, "max": 200, "unit": "°C"},
-            "humidity": {"min": 30, "max": 80, "unit": "%"},
-            "vibration": {"min": 0.1, "max": 5.0, "unit": "mm/s"},
-            "pressure": {"min": 0.5, "max": 10.0, "unit": "bar"},
-            "current": {"min": 5, "max": 50, "unit": "A"},
-            "voltage": {"min": 200, "max": 480, "unit": "V"},
-            "speed": {"min": 100, "max": 3000, "unit": "RPM"},
-            "flow_rate": {"min": 10, "max": 200, "unit": "L/min"}
+            "temperature": {"min": -40, "max": 300, "unit": "°C"},
+            "humidity": {"min": 20, "max": 90, "unit": "%"},
+            "vibration": {"min": 0.01, "max": 10.0, "unit": "mm/s"},
+            "pressure": {"min": 0.1, "max": 50.0, "unit": "bar"},
+            "current": {"min": 1, "max": 200, "unit": "A"},
+            "voltage": {"min": 24, "max": 1000, "unit": "V"},
+            "speed": {"min": 10, "max": 10000, "unit": "RPM"},
+            "flow_rate": {"min": 0.1, "max": 1000, "unit": "L/min"},
+            "torque": {"min": 1, "max": 5000, "unit": "Nm"},
+            "force": {"min": 10, "max": 10000, "unit": "N"},
+            "thrust": {"min": 1000, "max": 500000, "unit": "N"},
+            "altitude": {"min": 0, "max": 50000, "unit": "ft"}
         }
         
         self.maintenance_types = {
@@ -71,11 +75,11 @@ class MariasMargheritasMockData:
     def generate_equipment_id(self, category: str, machine_name: str) -> str:
         """Generate unique equipment ID"""
         category_code = {
-            "sauce_ingredient": "SI",
-            "dough_production": "DP", 
-            "assembly_production": "AP",
-            "baking_cooking": "BC",
-            "packaging_output": "PO"
+            "material_processing": "MP",
+            "component_fabrication": "CF", 
+            "aircraft_assembly": "AA",
+            "engine_testing": "ET",
+            "final_inspection": "FI"
         }
         
         # Use deterministic numbering based on machine name to ensure consistency
@@ -84,7 +88,7 @@ class MariasMargheritasMockData:
         return f"{category_code[category]}-{machine_num}"
 
     def generate_equipment_data(self) -> List[Dict[str, Any]]:
-        """Generate complete equipment dataset for Maria's Margheritas"""
+        """Generate complete equipment dataset for AeroTech Industries"""
         equipment_list = []
         
         for category, details in self.equipment_categories.items():
@@ -97,12 +101,14 @@ class MariasMargheritasMockData:
                 health = max(60, min(100, base_health * age_factor))
                 
                 # RUL calculation (Remaining Useful Life in hours)
-                if "Oven" in machine_name or "Heater" in machine_name:
-                    max_life = 8760  # 1 year for high-heat equipment
-                elif "Conveyor" in machine_name:
-                    max_life = 17520  # 2 years for moving parts
+                if "Test Stand" in machine_name or "Engine" in machine_name:
+                    max_life = 8760  # 1 year for high-stress testing equipment
+                elif "Assembly Line" in machine_name or "Robot" in machine_name:
+                    max_life = 17520  # 2 years for precision assembly equipment
+                elif "CNC" in machine_name or "Lathe" in machine_name:
+                    max_life = 26280  # 3 years for precision machining equipment
                 else:
-                    max_life = 13140  # 1.5 years for standard equipment
+                    max_life = 13140  # 1.5 years for standard aerospace equipment
                 
                 rul = int(max_life * (health / 100) * random.uniform(0.3, 0.8))
                 
@@ -152,69 +158,73 @@ class MariasMargheritasMockData:
     def _get_location(self, category: str) -> str:
         """Get realistic location for equipment category"""
         locations = {
-            "sauce_ingredient": "Ingredient Processing Bay",
-            "dough_production": "Dough Production Line",
-            "assembly_production": "Assembly Floor",
-            "baking_cooking": "Baking Station",
-            "packaging_output": "Packaging Bay"
+            "material_processing": "Material Processing Bay",
+            "component_fabrication": "Precision Manufacturing Floor",
+            "aircraft_assembly": "Assembly Hangar",
+            "engine_testing": "Engine Test Bay",
+            "final_inspection": "Quality Control Station"
         }
         return locations.get(category, "Production Floor")
 
     def _get_manufacturer(self, category: str) -> str:
         """Get realistic manufacturer for equipment type"""
         manufacturers = {
-            "sauce_ingredient": ["FoodTech Industries", "Culinary Equipment Co", "Industrial Mixing Systems"],
-            "dough_production": ["DoughMaster Pro", "Bakery Equipment Ltd", "Industrial Baking Systems"],
-            "assembly_production": ["AssemblyTech", "Production Line Solutions", "Automation Systems Inc"],
-            "baking_cooking": ["HeatMaster Ovens", "Industrial Baking Equipment", "Thermal Systems Corp"],
-            "packaging_output": ["PackMaster Systems", "Industrial Packaging", "Automation Solutions"]
+            "material_processing": ["Boeing Advanced Materials", "Airbus Composite Systems", "Lockheed Martin Materials"],
+            "component_fabrication": ["Pratt & Whitney Precision", "General Electric Aviation", "Rolls-Royce Manufacturing"],
+            "aircraft_assembly": ["Boeing Assembly Systems", "Airbus Automation", "Lockheed Martin Robotics"],
+            "engine_testing": ["Pratt & Whitney Test Systems", "General Electric Test Equipment", "Rolls-Royce Testing"],
+            "final_inspection": ["Boeing Quality Systems", "Airbus Inspection Tech", "Lockheed Martin QC"]
         }
-        return random.choice(manufacturers.get(category, ["Industrial Equipment Co"]))
+        return random.choice(manufacturers.get(category, ["Aerospace Equipment Co"]))
 
     def generate_sensor_data(self, equipment_id: str, equipment_name: str) -> Dict[str, Any]:
-        """Generate realistic sensor data for pizza manufacturing equipment"""
+        """Generate realistic sensor data for aerospace manufacturing equipment"""
         sensor_data = {}
         
         # Base sensor values based on equipment type
-        if "Oven" in equipment_name or "Heater" in equipment_name:
+        if "Test Stand" in equipment_name or "Engine" in equipment_name:
             sensor_data.update({
-                "temperature": random.uniform(180, 220),
+                "temperature": random.uniform(200, 300),
                 "humidity": random.uniform(20, 40),
-                "pressure": random.uniform(1.0, 2.0),
-                "current": random.uniform(15, 35),
-                "voltage": random.uniform(400, 480)
+                "pressure": random.uniform(10.0, 50.0),
+                "current": random.uniform(50, 200),
+                "voltage": random.uniform(400, 1000),
+                "thrust": random.uniform(10000, 500000)
             })
-        elif "Mixer" in equipment_name or "Kneader" in equipment_name:
+        elif "CNC" in equipment_name or "Lathe" in equipment_name:
             sensor_data.update({
-                "temperature": random.uniform(25, 35),
-                "vibration": random.uniform(0.5, 2.0),
-                "current": random.uniform(20, 40),
-                "voltage": random.uniform(400, 480),
-                "speed": random.uniform(200, 800)
+                "temperature": random.uniform(25, 45),
+                "vibration": random.uniform(0.01, 2.0),
+                "current": random.uniform(20, 100),
+                "voltage": random.uniform(200, 600),
+                "speed": random.uniform(1000, 8000),
+                "torque": random.uniform(100, 5000)
             })
-        elif "Conveyor" in equipment_name:
+        elif "Assembly Line" in equipment_name or "Robot" in equipment_name:
             sensor_data.update({
-                "temperature": random.uniform(20, 30),
-                "vibration": random.uniform(0.2, 1.5),
-                "current": random.uniform(8, 20),
-                "voltage": random.uniform(200, 400),
-                "speed": random.uniform(50, 150)
+                "temperature": random.uniform(20, 35),
+                "vibration": random.uniform(0.1, 1.5),
+                "current": random.uniform(15, 50),
+                "voltage": random.uniform(200, 480),
+                "speed": random.uniform(50, 500),
+                "force": random.uniform(100, 10000)
             })
         else:
-            # Default sensor values for other equipment
+            # Default sensor values for other aerospace equipment
             sensor_data.update({
-                "temperature": random.uniform(20, 40),
-                "humidity": random.uniform(30, 60),
-                "vibration": random.uniform(0.1, 1.0),
-                "pressure": random.uniform(0.5, 5.0),
-                "current": random.uniform(10, 30),
-                "voltage": random.uniform(200, 480),
-                "speed": random.uniform(100, 1000)
+                "temperature": random.uniform(15, 50),
+                "humidity": random.uniform(20, 60),
+                "vibration": random.uniform(0.01, 1.0),
+                "pressure": random.uniform(0.1, 10.0),
+                "current": random.uniform(5, 100),
+                "voltage": random.uniform(24, 600),
+                "speed": random.uniform(10, 2000)
             })
         
-        # Add flow rate for liquid processing equipment
-        if "Sauce" in equipment_name or "Dispenser" in equipment_name:
-            sensor_data["flow_rate"] = random.uniform(50, 150)
+        # Add specialized sensors for aerospace equipment
+        if "Material" in equipment_name or "Composite" in equipment_name:
+            sensor_data["flow_rate"] = random.uniform(10, 200)
+            sensor_data["altitude"] = random.uniform(0, 1000)  # Manufacturing altitude
         
         # Round all values to 2 decimal places
         return {k: round(v, 2) for k, v in sensor_data.items()}
@@ -247,10 +257,12 @@ class MariasMargheritasMockData:
             new_health = max(60, equipment["health"] * degradation_factor)
             
             # Update RUL based on new health
-            if "Oven" in equipment["name"] or "Heater" in equipment["name"]:
+            if "Test Stand" in equipment["name"] or "Engine" in equipment["name"]:
                 max_life = 8760
-            elif "Conveyor" in equipment["name"]:
+            elif "Assembly Line" in equipment["name"] or "Robot" in equipment["name"]:
                 max_life = 17520
+            elif "CNC" in equipment["name"] or "Lathe" in equipment["name"]:
+                max_life = 26280
             else:
                 max_life = 13140
             
@@ -285,15 +297,15 @@ class MariasMargheritasMockData:
         return updated_equipment
 
 # Global instance for easy access
-marias_margheritas_mock = MariasMargheritasMockData()
+aerotech_industries_mock = AeroTechIndustriesMockData()
 
 if __name__ == "__main__":
     # Test the mock data generation
-    print("🍕 Maria's Margheritas Pizza Manufacturing Unit - Mock Data Generator")
+    print("✈️ AeroTech Industries Aircraft Manufacturing Unit - Mock Data Generator")
     print("=" * 70)
     
     # Generate equipment data
-    equipment = marias_margheritas_mock.generate_equipment_data()
+    equipment = aerotech_industries_mock.generate_equipment_data()
     print(f"✅ Generated {len(equipment)} equipment items")
     
     # Show sample equipment
@@ -303,10 +315,10 @@ if __name__ == "__main__":
     
     # Generate sample sensor data
     print("\n🔌 Sample Sensor Data:")
-    sample_sensor = marias_margheritas_mock.generate_sensor_data("SI-001", "Sauce Mixer #1")
+    sample_sensor = aerotech_industries_mock.generate_sensor_data("MP-100", "Composite Material Mixer #1")
     for sensor, value in sample_sensor.items():
         print(f"  - {sensor}: {value}")
     
     # Generate summary
-    summary = marias_margheritas_mock.generate_summary_data()
+    summary = aerotech_industries_mock.generate_summary_data()
     print(f"\n📊 Summary: {summary['total_equipment']} machines, {summary['healthy_equipment']} healthy")

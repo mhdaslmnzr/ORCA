@@ -459,11 +459,11 @@ export default function PREDATOREnhanced() {
                           <Td>
                             <Badge
                               colorScheme={
-                                eq.category === 'sauce_ingredient' ? 'orange' :
-                                eq.category === 'dough_production' ? 'yellow' :
-                                eq.category === 'assembly_production' ? 'green' :
-                                eq.category === 'baking_cooking' ? 'red' :
-                                eq.category === 'packaging_output' ? 'purple' : 'blue'
+                                eq.category === 'material_processing' ? 'orange' :
+                                eq.category === 'component_fabrication' ? 'yellow' :
+                                eq.category === 'aircraft_assembly' ? 'green' :
+                                eq.category === 'engine_testing' ? 'red' :
+                                eq.category === 'final_inspection' ? 'purple' : 'blue'
                               }
                               variant="outline"
                               borderRadius="full"

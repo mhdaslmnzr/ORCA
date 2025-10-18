@@ -2,10 +2,10 @@
 
 ## 🎯 **Project Overview**
 
-ORCA is an intelligent AI-powered operations platform designed for **Maria's Margheritas Pizza Manufacturing Unit**, providing advanced predictive maintenance, real-time monitoring, and AI-driven insights for manufacturing equipment.
+ORCA is an intelligent AI-powered operations platform designed for **AeroTech Industries Aircraft Manufacturing Unit**, providing advanced predictive maintenance, real-time monitoring, and AI-driven insights for manufacturing equipment.
 
 ### **🏭 Manufacturing Context**
-- **Company**: Maria's Margheritas (Large-scale pizza manufacturer)
+- **Company**: AeroTech Industries (Large-scale aircraft manufacturer)
 - **Equipment**: 25 machines across 5 production categories
 - **Focus**: Predictive maintenance using IoT sensor data + AI-powered task planning
 - **AI Integration**: Google Gemini Pro API for intelligent insights
@@ -15,14 +15,14 @@ ORCA is an intelligent AI-powered operations platform designed for **Maria's Mar
 ## 🚀 **Current Status: PREDATOR MODULE FULLY IMPLEMENTED**
 
 ### **✅ What's Working:**
-- **25 Pizza Manufacturing Machines** with realistic mock data
-- **Real-time Sensor Monitoring** (temperature, vibration, pressure, current, voltage, speed)
+- **25 Aircraft Manufacturing Machines** with realistic mock data
+- **Real-time Sensor Monitoring** (temperature, vibration, pressure, current, voltage, speed, thrust, torque)
 - **Predictive Maintenance** using multiple ML models (XGBoost, CNN+LSTM, CNN+BiLSTM+Attention) trained on NASA C-MAPSS dataset
 - **AI Chatbot Interface** for maintenance queries and file analysis
 - **Agentic Task Planner** that auto-generates maintenance tasks
 - **Modern Dark Theme UI** with glassmorphism effects
 - **Equipment Health Tracking** with RUL predictions
-- **Category-based Organization** (sauces, dough, assembly, baking, packaging)
+- **Category-based Organization** (material processing, component fabrication, aircraft assembly, engine testing, final inspection)
 - **Responsive Design** with sticky header and floating sidebar
 
 ### **🚧 What's In Progress:**
@@ -59,7 +59,7 @@ frontend/src/
 ```
 backend/
 ├── main.py               # FastAPI server + all API endpoints
-├── mock_company.py       # Maria's Margheritas data generator
+├── mock_company.py       # AeroTech Industries data generator
 ├── models/               # Multiple ML model types
 │   ├── models/          # XGBoost models (FD001-FD004)
 │   ├── models_deep/     # CNN+LSTM models (FD001-FD004)
@@ -93,43 +93,43 @@ backend/
 
 ### **Model Training Data**
 - **Dataset**: NASA C-MAPSS Turbofan Engine Degradation Simulation
-- **Adaptation**: Models adapted for pizza manufacturing equipment context
-- **Sensors**: Temperature, vibration, pressure, current, voltage, speed
+- **Adaptation**: Models adapted for aerospace manufacturing equipment context
+- **Sensors**: Temperature, vibration, pressure, current, voltage, speed, thrust, torque, altitude
 - **Output**: Remaining Useful Life (RUL) predictions in cycles
 
 ---
 
-## 🍕 **Manufacturing Equipment Categories**
+## ✈️ **Manufacturing Equipment Categories**
 
-### **1. Sauce & Ingredient Processing (6 machines)**
-- Sauce Mixers, Cheese Graters, Ingredient Dispensers, Spice Blenders
-- **Location**: Ingredient Processing Bay
-- **Sensors**: Temperature, flow rate, pressure, humidity
+### **1. Material Processing & Composite Manufacturing (6 machines)**
+- Composite Material Mixers, Metal Alloy Processors, Chemical Dispensers, Material Heaters
+- **Location**: Material Processing Bay
+- **Sensors**: Temperature, flow rate, pressure, humidity, altitude
 - **Health Metrics**: RUL prediction, anomaly detection
 
-### **2. Dough Production (5 machines)**
-- Dough Mixers, Kneaders, Rollers, Proofing Chambers, Dough Cutters
-- **Location**: Dough Production Line
-- **Sensors**: Vibration, speed, current, voltage, temperature
+### **2. Component Fabrication & Precision Machining (5 machines)**
+- CNC Milling Machines, Precision Lathes, Hydraulic Presses, Heat Treatment Chambers, Component Cutters
+- **Location**: Precision Manufacturing Floor
+- **Sensors**: Vibration, speed, current, voltage, temperature, torque
 - **Health Metrics**: Performance optimization, wear analysis
 
-### **3. Assembly Production (8 machines)**
-- Assembly Conveyors, Applicators, Topping Robots, Quality Scanners
-- **Location**: Assembly Floor
-- **Sensors**: Speed, vibration, temperature, pressure
+### **3. Aircraft Assembly & Production Lines (8 machines)**
+- Assembly Lines, Rivet Applicators, Welding Robots, Quality Inspection Scanners, Surface Treatment Units
+- **Location**: Assembly Hangar
+- **Sensors**: Speed, vibration, temperature, pressure, force
 - **Health Metrics**: Real-time monitoring, predictive alerts
 
-### **4. Baking & Cooking (4 machines)**
-- Tunnel Ovens, Temperature Controllers, Heat Recovery Systems, Cooling Units
-- **Location**: Baking Station
-- **Sensors**: Temperature, humidity, pressure, current, gas flow
+### **4. Engine Testing & Performance Validation (4 machines)**
+- Engine Test Stands, Temperature Controllers, Heat Recovery Systems, Performance Monitors
+- **Location**: Engine Test Bay
+- **Sensors**: Temperature, humidity, pressure, current, thrust
 - **Health Metrics**: Thermal efficiency, energy optimization
 
-### **5. Packaging & Output (2 machines)**
-- Packaging Lines, Palletizers, Quality Control Systems
-- **Location**: Packaging Bay
-- **Sensors**: Speed, vibration, current, weight, optical sensors
-- **Health Metrics**: Throughput optimization, quality assurance
+### **5. Final Inspection & Quality Control (2 machines)**
+- Quality Control Lines, Aircraft Positioning Systems
+- **Location**: Quality Control Station
+- **Sensors**: Pressure, force, vibration, temperature
+- **Health Metrics**: Quality assurance, compliance monitoring
 
 ---
 
@@ -144,7 +144,7 @@ uvicorn main:app --reload
 ```
 ✅ XGBoost models loaded successfully (FD001-FD004)
 ✅ Deep Learning models available (CNN+LSTM, CNN+BiLSTM+Attention)
-🍕 Initialized Maria's Margheritas manufacturing unit with 25 machines
+✈️ Initialized AeroTech Industries manufacturing unit with 25 machines
 🚀 FastAPI server running on http://127.0.0.1:8000
 ```
 
@@ -314,7 +314,7 @@ ORCA/
 │   └── next.config.ts
 ├── backend/                  # FastAPI backend
 │   ├── main.py             # Main server with all endpoints
-│   ├── mock_company.py     # Data generator for Maria's Margheritas
+│   ├── mock_company.py     # Data generator for AeroTech Industries
 │   ├── models/             # ML models (FD001-FD004)
 │   ├── requirements.txt    # Python dependencies
 │   └── test_backend.py     # Test script
@@ -328,7 +328,7 @@ ORCA/
 ## 🎯 **Success Metrics**
 
 ### **Current Achievements**
-- ✅ **25 Manufacturing Machines** with realistic pizza manufacturing data
+- ✅ **25 Manufacturing Machines** with realistic aerospace manufacturing data
 - ✅ **5 Equipment Categories** properly organized and categorized
 - ✅ **Real-time Sensor Simulation** working with multiple sensor types
 - ✅ **AI Chatbot Interface** functional with Gemini Pro integration
@@ -354,7 +354,7 @@ ORCA/
 The ORCA PREDATOR system is **fully implemented and ready for production use**. All core features are working, the UI is polished with a modern dark theme, and the backend is stable with comprehensive API coverage.
 
 **Current Capabilities:**
-1. **Real-time Equipment Monitoring** with 25 pizza manufacturing machines
+1. **Real-time Equipment Monitoring** with 25 aerospace manufacturing machines
 2. **AI-Powered Maintenance Planning** with automatic task generation
 3. **Intelligent Chatbot** for maintenance queries and file analysis
 4. **Advanced Predictive Analytics** using 12 ML models (XGBoost, CNN+LSTM, CNN+BiLSTM+Attention)
@@ -396,4 +396,4 @@ For technical support or feature requests:
 
 **🎉 Congratulations! You now have a fully functional, AI-powered manufacturing maintenance system with a modern dark theme UI!**
 
-**The PREDATOR module is complete and ready to revolutionize your pizza manufacturing operations! 🍕🚀**
+**The PREDATOR module is complete and ready to revolutionize your aerospace manufacturing operations! ✈️🚀**

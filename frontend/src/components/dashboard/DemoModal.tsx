@@ -82,8 +82,8 @@ export default function DemoModal({ isOpen, onClose }: DemoModalProps) {
                     <Icon as={Building} color="dark.accent" boxSize={8} />
                   </Box>
                   <VStack align="start" spacing={1}>
-                    <Heading size="lg" color="dark.text">Maria's Margheritas</Heading>
-                    <Text color="dark.muted" fontSize="lg">Large-Scale Pizza Manufacturing Company</Text>
+                    <Heading size="lg" color="dark.text">AeroTech Industries</Heading>
+                    <Text color="dark.muted" fontSize="lg">Large-Scale Aircraft Manufacturing Company</Text>
                     <Badge colorScheme="green" variant="outline">Production Unit Active</Badge>
                   </VStack>
                 </HStack>
@@ -95,7 +95,7 @@ export default function DemoModal({ isOpen, onClose }: DemoModalProps) {
                       <Text fontWeight="600" color="dark.text">Company Profile</Text>
                     </HStack>
                     <VStack spacing={2} align="start">
-                      <Text fontSize="sm" color="dark.muted">• Large-scale pizza manufacturing operations</Text>
+                      <Text fontSize="sm" color="dark.muted">• Large-scale aircraft manufacturing operations</Text>
                       <Text fontSize="sm" color="dark.muted">• 25+ production machines across 5 categories</Text>
                       <Text fontSize="sm" color="dark.muted">• Real-time monitoring and predictive maintenance</Text>
                       <Text fontSize="sm" color="dark.muted">• AI-powered insights and task planning</Text>
@@ -108,11 +108,11 @@ export default function DemoModal({ isOpen, onClose }: DemoModalProps) {
                       <Text fontWeight="600" color="dark.text">Production Categories</Text>
                     </HStack>
                     <VStack spacing={2} align="start">
-                      <Text fontSize="sm" color="dark.muted">• Sauce & Ingredient Processing</Text>
-                      <Text fontSize="sm" color="dark.muted">• Dough Production & Mixing</Text>
-                      <Text fontSize="sm" color="dark.muted">• Assembly & Production Lines</Text>
-                      <Text fontSize="sm" color="dark.muted">• Baking & Cooking Systems</Text>
-                      <Text fontSize="sm" color="dark.muted">• Packaging & Output Management</Text>
+                      <Text fontSize="sm" color="dark.muted">• Material Processing & Composite Manufacturing</Text>
+                      <Text fontSize="sm" color="dark.muted">• Component Fabrication & Precision Machining</Text>
+                      <Text fontSize="sm" color="dark.muted">• Aircraft Assembly & Production Lines</Text>
+                      <Text fontSize="sm" color="dark.muted">• Engine Testing & Performance Validation</Text>
+                      <Text fontSize="sm" color="dark.muted">• Final Inspection & Quality Control</Text>
                     </VStack>
                   </Box>
                 </SimpleGrid>
