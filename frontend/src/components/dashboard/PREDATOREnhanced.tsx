@@ -254,6 +254,39 @@ export default function PREDATOREnhanced() {
               
               <Button
                 size="sm"
+                leftIcon={<Activity size={14} />}
+                onClick={async () => {
+                  try {
+                    const response = await fetch('https://orca-backend-lfcl.onrender.com/');
+                    const data = await response.json();
+                    console.log('Backend connected:', data);
+                    toast({
+                      title: 'Backend Connected',
+                      description: `Status: ${data.status} - Equipment Count: ${data.equipment_count}`,
+                      status: 'success',
+                      duration: 5000,
+                      isClosable: true,
+                    });
+                  } catch (error) {
+                    console.error('Backend connection failed:', error);
+                    toast({
+                      title: 'Backend Connection Failed',
+                      description: 'Unable to connect to backend server. Please try again.',
+                      status: 'error',
+                      duration: 5000,
+                      isClosable: true,
+                    });
+                  }
+                }}
+                bg="green.500"
+                _hover={{ bg: 'green.600' }}
+                color="white"
+              >
+                Check Backend
+              </Button>
+              
+              <Button
+                size="sm"
                 leftIcon={<Eye size={14} />}
                 variant="outline"
                 borderColor="dark.border"
